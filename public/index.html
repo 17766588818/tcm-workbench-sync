@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快快的工作台 · 白芍</title>
+<meta name="theme-color" content="#5C7A4D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="快快的工作台">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+
+:root{
+  /* 暖调草本绿配色 */
+  --bg:#F5F3EF; --side:#5C7A4D; --side2:#6B8E57; --brand:#5C7A4D; --brand2:#7CB342;
+  --green:#5C7A4D; --green-d:#3D5A32; --green-l:#E8F5E9; --leaf:#7CB342;
+  --ok:#66BB6A; --warn:#F0A030; --danger:#E53935; --line:#E0DED6; --txt:#2D2D2D; --mut:#888888;
+  --card:#FFFFFF; --shadow:0 1px 3px rgba(92,122,77,.06),0 8px 24px rgba(92,122,77,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:"Microsoft YaHei","PingFang SC",system-ui,-apple-system,sans-serif;color:var(--txt);background:var(--bg)}
+.app{display:flex;height:100vh;overflow:hidden}
+.side{width:250px;background:linear-gradient(180deg,#5C7A4D 0%,#4A6540 100%);color:#EDF2EB;display:flex;flex-direction:column;flex-shrink:0;box-shadow:2px 0 16px rgba(0,0,0,.12)}
+.brand{padding:20px 18px 16px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#7CB342,#5C7A4D);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(92,122,77,.35)}
+.brand .logo svg{width:22px;height:22px;color:#fff}
+.brand b{font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px;display:block;line-height:1.2}
+.nav{flex:1;overflow:auto;padding:14px 10px}
+.nav .grp{padding:18px 14px 9px;margin:2px 10px 6px;font-size:14px;color:#F1F8EC;text-transform:none;letter-spacing:1px;font-weight:800;border-bottom:1px solid rgba(255,255,255,.16);text-shadow:0 1px 2px rgba(0,0,0,.22)}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;margin:2px 0;border-radius:10px;color:#D4E5CC;cursor:pointer;font-size:13.5px;transition:.15s}
+.nav a:hover{background:rgba(255,255,255,.09);color:#fff}
+.nav a.active{background:linear-gradient(90deg,rgba(124,179,66,.22),rgba(124,179,66,.06));color:#fff;box-shadow:inset 3px 0 0 var(--brand2)}
+.nav a .ni{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;color:#B8D4AA;flex-shrink:0}
+.nav a.active .ni{background:linear-gradient(135deg,#7CB342,#5C7A4D);color:#fff}
+.side .foot{padding:12px 18px;font-size:11px;color:#B8D4AA;border-top:1px solid rgba(255,255,255,.08)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:14px 24px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.topbar h1{font-size:17px;margin:0;font-weight:700;display:flex;align-items:center;gap:9px}
+.topbar h1::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--brand2);box-shadow:0 0 0 4px var(--green-l)}
+.cmd{flex:1;min-width:300px;display:flex;gap:10px}
+.cmd input{flex:1;padding:11px 16px;border:1px solid var(--line);border-radius:12px;font-size:13.5px;outline:none;background:#FAF9F6;transition:.15s}
+.cmd input:focus{border-color:var(--brand2);box-shadow:0 0 0 4px var(--green-l);background:#fff}
+.btn{border:none;background:linear-gradient(135deg,#7CB342,#5C7A4D);color:#fff;padding:11px 20px;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;box-shadow:0 4px 12px rgba(92,122,77,.26);transition:.15s}
+.btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn.ghost{background:#E8F5E9;color:var(--green-d);box-shadow:none}
+.btn.ghost:hover{background:#D4EDDA}
+.btn.sm{padding:6px 13px;font-size:12px;border-radius:9px}
+.btn.danger{background:#fdeaea;color:var(--danger);box-shadow:none}
+.content{flex:1;overflow:auto;padding:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:18px}
+.card .sub{color:var(--mut);font-size:12.5px;margin-bottom:16px}
+.hero{background:linear-gradient(120deg,#5C7A4D 0%,#7CB342 100%);color:#fff;border:none;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%);border-radius:50%}
+.hero .h-txt{position:relative;z-index:1}
+.hero h1{font-size:24px;margin:0 0 6px;display:flex;align-items:center;gap:10px;color:#fff}
+.hero p{margin:0;opacity:.88;font-size:13px}
+.hero .date{margin-top:12px;display:inline-block;background:rgba(255,255,255,.16);padding:5px 12px;border-radius:20px;font-size:12px}
+.hero-art{position:relative;z-index:1;width:118px;height:118px;color:rgba(255,255,255,.92);flex-shrink:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.stat{background:linear-gradient(135deg,#FAFCF8,#F2F7EE);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px}
+.stat .ic{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--brand);box-shadow:0 3px 8px rgba(92,122,77,.10);flex-shrink:0}
+.stat .n{font-size:24px;font-weight:700;color:var(--green-d);line-height:1}
+.stat .l{font-size:12px;color:var(--mut);margin-top:3px}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;overflow:hidden;border-radius:12px}
+th,td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+th{background:#F2F4EF;font-weight:600;color:var(--green-d);white-space:nowrap;font-size:12.5px}
+tbody tr:hover{background:#F8FAF6}
+/* 销售记录行状态底色：已回款=绿，已开票=浅绿 */
+tbody tr.row-paid{background:#E3F3DF}
+tbody tr.row-paid:hover{background:#DAEFD4}
+tbody tr.row-invoiced{background:#F1F8EC}
+tbody tr.row-invoiced:hover{background:#EBF4E2}
+td a.lk{color:var(--brand2);cursor:pointer;font-weight:500}
+td a.lk:hover{text-decoration:underline}
+.tag{display:inline-block;padding:2px 10px;border-radius:11px;font-size:11px;background:var(--green-l);color:var(--green-d);font-weight:500}
+.tag.ok{background:#e3f7ea;color:var(--ok)}
+.tag.warn{background:#fbf0d8;color:var(--warn)}
+.tag.danger{background:#fdeaea;color:var(--danger)}
+.empty{padding:36px;text-align:center;color:var(--mut)}
+.row-actions{white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}
+.chip{background:var(--green-l);color:var(--green-d);border:none;padding:8px 14px;border-radius:18px;font-size:12.5px;cursor:pointer;font-weight:500;transition:.15s}
+.chip:hover{background:var(--brand2);color:#fff}
+.pill{font-size:11px;padding:3px 9px;border-radius:11px;background:var(--green-l);color:var(--green-d);font-weight:500}
+.result{font-size:13.5px;line-height:1.7}
+.result h3{margin:2px 0 10px;font-size:15px;color:var(--green-d)}
+.result table{margin:10px 0}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:6px 14px;font-size:13px}
+.kv b{color:var(--mut);font-weight:500}
+.hint{background:#FFF9E6;border:1px solid #F0E6C8;color:#A08830;padding:11px 13px;border-radius:10px;font-size:12.5px;margin:8px 0}
+.sec-title{font-size:13px;font-weight:700;color:var(--brand);margin:16px 0 7px;display:flex;align-items:center;gap:7px}
+.sec-title::before{content:"";width:4px;height:14px;background:var(--brand2);border-radius:3px;display:inline-block}
+pre{white-space:pre-wrap;font-family:inherit;margin:0}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.cron-box{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;background:linear-gradient(135deg,#FCFDFB,#F4F8F0)}
+.cron-box .cr{font-family:ui-monospace,monospace;background:#4A6540;color:#D4EDC8;padding:5px 12px;border-radius:8px;font-size:12px;white-space:nowrap}
+.modal{position:fixed;inset:0;background:rgba(61,90,50,.50);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:48px 16px;z-index:50;backdrop-filter:blur(3px)}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:min(640px,100%);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-box h3{margin:0 0 16px;font-size:17px;color:var(--green-d)}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;background:#FAF9F6}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--brand2);box-shadow:0 0 0 3px var(--green-l)}
+.field textarea{resize:vertical;min-height:64px}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+.sync{display:flex;align-items:center;gap:7px;background:var(--green-l);border:1px solid var(--line);padding:7px 13px;border-radius:20px;cursor:pointer;font-size:12.5px;color:var(--green-d);font-weight:500;white-space:nowrap;transition:.15s;flex-shrink:0}
+.sync:hover{background:#D4EDDA}
+.sync .dot{width:9px;height:9px;border-radius:50%;background:#9CCC65;box-shadow:0 0 0 3px rgba(92,122,77,.10);transition:.2s}
+.sync.err{background:#fdeaea;color:var(--danger);border-color:#f5c9c5}
+.sync.err .dot{background:var(--danger)}
+.sync.syncing{background:#fbf0d8;color:var(--warn);border-color:#f0e0b0}
+.sync.syncing .dot{background:var(--warn)}
+.field .sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--txt)}
+/* ===== 文件上传 / 预览 ===== */
+.file-wrap{margin-top:4px}
+.file-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.file-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;border:1px solid var(--line);border-radius:10px;background:#FAF9F6;width:84px}
+.file-item .thumb{width:70px;height:70px;object-fit:cover;border-radius:7px;cursor:pointer;background:#F2F4EF}
+.file-item .ficon{width:70px;height:70px;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;border-radius:7px;background:#F2F4EF;color:var(--brand)}
+.file-item .fname{font-size:10.5px;color:var(--mut);max-width:74px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.file-item .fdel{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:var(--danger);color:#fff;border:none;cursor:pointer;font-size:12px;line-height:20px;text-align:center;padding:0;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.file-add{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:7px 13px;border:1px dashed var(--brand);border-radius:9px;color:var(--brand);background:#F4F8F0;cursor:pointer;font-size:12.5px;font-weight:500;transition:.15s}
+.file-add:hover{background:var(--green-l)}
+.file-add input[type=file]{display:none}
+td .cell-files{display:flex;flex-wrap:wrap;gap:6px}
+td .cell-thumb{width:40px;height:40px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid var(--line)}
+td .cell-file{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border:1px solid var(--line);border-radius:11px;background:var(--green-l);color:var(--green-d);font-size:11px;cursor:pointer;font-weight:500}
+td .cell-file:hover{background:var(--brand2);color:#fff}
+.file-modal{position:fixed;inset:0;background:rgba(45,65,35,.82);display:none;align-items:center;justify-content:center;z-index:80;padding:24px;backdrop-filter:blur(3px)}
+.file-modal.show{display:flex}
+.file-modal img{max-width:92vw;max-height:88vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.file-modal .fm-bar{position:absolute;top:18px;right:22px;display:flex;gap:8px}
+/* 登录门禁 */
+.auth-gate{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#5C7A4D 0%,#3D5A32 100%);padding:20px}
+.auth-card{background:#fff;border-radius:20px;width:min(380px,100%);padding:32px 28px;box-shadow:0 24px 70px rgba(0,0,0,.4);text-align:center}
+.auth-logo{width:62px;height:62px;border-radius:17px;margin:0 auto 14px;background:linear-gradient(135deg,#7CB342,#5C7A4D);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;box-shadow:0 8px 20px rgba(92,122,77,.4)}
+.auth-card h2{margin:0 0 6px;font-size:20px;color:var(--green-d)}
+.auth-sub{color:var(--mut);font-size:13px;margin:0 0 20px}
+.auth-card .field{text-align:left;margin-bottom:13px}
+.auth-card .field label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:5px}
+.auth-card .field input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:11px;font-size:14px;outline:none;box-sizing:border-box;background:#FAF9F6}
+.auth-card .field input:focus{border-color:var(--brand2);box-shadow:0 0 0 4px var(--green-l);background:#fff}
+.auth-err{color:var(--danger);font-size:12.5px;min-height:18px;margin:2px 0 12px;text-align:left}
+.auth-link{display:inline-block;margin-top:12px;font-size:12.5px;color:var(--mut);cursor:pointer;text-decoration:underline}
+.auth-link:hover{color:var(--green-d)}
+.auth-remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt);margin:2px 0 2px;cursor:pointer;user-select:none}
+.auth-remember input{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+.usr{display:flex;align-items:center;gap:10px;margin-left:4px}
+.ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7CB342,#5C7A4D);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;overflow:hidden;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.ava img{width:100%;height:100%;object-fit:cover}
+.ico{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--green-d);transition:.15s}
+.ico:hover{background:var(--green-l)}
+
+/* ===================== 计划管理：双面板布局 ===================== */
+.plan-layout{display:flex;gap:18px;height:calc(100vh - 130px);min-height:480px}
+.plan-left{flex:1;min-width:300px;overflow-y:auto}
+.plan-right{flex:1.5;min-width:380px;overflow-y:auto}
+
+/* 左侧：任务清单 */
+.plan-list-card,.plan-cal-card{height:100%;display:flex;flex-direction:column}
+.plan-header{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:12px;flex-wrap:wrap}
+.plan-month-label{font-size:13px;color:var(--mut);background:var(--green-l);padding:3px 10px;border-radius:11px;font-weight:600}
+.plan-tasks{flex:1;overflow-y:auto}
+
+/* 分组 */
+.pt-group{margin-bottom:6px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.pt-group-head{display:flex;align-items:center;gap:8px;padding:7px 4px;cursor:pointer;border-radius:8px;transition:.15s;-webkit-user-select:none;user-select:none}
+.pt-group-head:hover{background:var(--green-l)}
+.pt-group-arrow{font-size:10px;color:var(--mut);width:16px;text-align:center;transition:.2s}
+.pt-group-name{font-weight:700;font-size:13.5px;color:var(--green-d);flex:1}
+.pt-group-progress{font-size:11.5px;color:var(--mut);background:#fff;border:1px solid var(--line);padding:1px 8px;border-radius:10px}
+.pt-group.collapsed .pt-items{display:none}
+.pt-group.collapsed .pt-group-arrow{transform:rotate(0deg)}
+
+/* 任务项 */
+.pt-item{display:flex;align-items:center;gap:9px;padding:9px 8px;margin:2px 0;border-radius:10px;cursor:pointer;transition:.15s}
+.pt-item:hover{background:var(--green-l)}
+.pt-item.done{opacity:.55}
+.pt-item.done .pt-title{text-decoration:line-through;color:var(--mut)}
+
+/* 复选框 */
+.pt-check{position:relative;display:flex;align-items:center;cursor:pointer;-webkit-user-select:none;user-select:none;flex-shrink:0}
+.pt-check input{position:absolute;opacity:0;width:0;height:0}
+.pt-check-box{width:20px;height:20px;border:2px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:.15s;background:#fff;flex-shrink:0}
+.pt-check-box::after{content:'';width:10px;height:5.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) scale(0);transition:.12s;margin-top:-2px}
+.pt-check input:checked+.pt-check-box{background:var(--brand);border-color:var(--brand)}
+.pt-check input:checked+.pt-check-box::after{transform:rotate(-45deg) scale(1)}
+.pt-check:hover .pt-check-box{border-color:var(--brand2)}
+
+/* 标题 */
+.pt-title{flex:1;font-size:13.5px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+
+/* 标签 */
+.pt-tag{font-size:10.5px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap;flex-shrink:0}
+
+/* 到期提示 */
+.pt-due{font-size:11px;white-space:nowrap;flex-shrink:0;color:var(--mut)}
+.pt-due.today{color:var(--ok);font-weight:700}
+.pt-due.overdue{color:var(--danger);font-weight:700}
+.pt-due.far{color:var(--mut)}
+
+/* 右侧：日历 */
+.cal-header{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:12px;flex-wrap:wrap}
+.cal-title{font-size:17px;font-weight:800;color:var(--green-d)}
+.cal-nav{display:flex;gap:6px;margin-left:auto}
+.cal-today-btn{font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;flex:1;align-content:start}
+.cal-weekday{text-align:center;font-size:11.5px;color:var(--mut);font-weight:700;padding:8px 0 4px}
+.cal-day{border:1px solid transparent;border-radius:10px;padding:4px 2px 2px;min-height:72px;cursor:pointer;transition:.15s;position:relative;background:#fafbfa}
+.cal-day:hover{border-color:var(--brand2);background:#fff}
+.cal-day.today{background:var(--green-l);border-color:var(--brand2);box-shadow:inset 0 0 0 1.5px var(--brand2)}
+.cal-day.other-month{opacity:.35}
+.cal-date-num{font-size:12.5px;font-weight:600;color:var(--txt);display:block;text-align:right;padding:1px 5px 2px}
+.cal-date-num.today-num{color:var(--green-d);font-weight:800}
+.cal-day-tasks{margin-top:2px;display:flex;flex-direction:column;gap:2px;max-height:90px;overflow:hidden}
+.cal-task-pill{font-size:10px;padding:2px 6px;border-radius:8px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:.15s;display:block;line-height:1.4}
+.cal-task-pill:hover{filter:brightness(.95);transform:scale(1.02)}
+.cal-task-pill.done{opacity:.5;text-decoration:line-through}
+
+@media(max-width:900px){
+  .plan-layout{flex-direction:column;height:auto}
+  .plan-left,.plan-right{min-width:unset}
+}
+
+/* ===================== 价格变动检测 ===================== */
+.pw-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pw-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pw-yao{background:linear-gradient(135deg,#F1F8EC,#E8F5E9);border-color:#cfe6c8}
+.pw-yao-title{font-size:13.5px;font-weight:700;color:var(--green-d);margin-bottom:10px}
+.pw-yao-links{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pw-mini{font-size:11.5px;color:var(--mut);background:#fff;border:1px solid var(--line);padding:4px 10px;border-radius:9px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pw-last{margin-top:10px;font-size:12px;color:var(--mut)}
+.pw-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.pw-stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--shadow)}
+.pw-stat-v{font-size:24px;font-weight:800;color:var(--txt)}
+.pw-stat-l{font-size:12px;color:var(--mut);margin-top:3px}
+.pw-stat.up .pw-stat-v{color:var(--danger)}
+.pw-stat.down .pw-stat-v{color:var(--ok)}
+.pw-stat.alert .pw-stat-v{color:var(--warn)}
+.pw-list{display:flex;flex-direction:column;gap:8px}
+.pw-row{display:grid;grid-template-columns:1.4fr 2fr 1fr 1fr auto;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;flex-wrap:wrap}
+.pw-row.pw-alert{border-color:var(--warn);background:#fff8ec;box-shadow:0 0 0 2px rgba(240,160,48,.18)}
+.pw-name{font-weight:700;font-size:14px;color:var(--green-d);display:flex;align-items:center;gap:7px}
+.pw-badge{font-size:10px;font-weight:700;color:#fff;background:var(--warn);padding:1px 7px;border-radius:9px}
+.pw-price{font-size:12.5px;color:var(--mut)}
+.pw-price b{color:var(--txt);font-size:13.5px}
+.pw-delta{font-size:13px;font-weight:700;text-align:center}
+.pw-delta.up{color:var(--danger)}
+.pw-delta.down{color:var(--ok)}
+.pw-delta.flat{color:var(--mut)}
+.pw-trend{font-size:12px;color:var(--mut);text-align:center}
+.pw-ops{text-align:right}
+.pw-toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-20px);background:linear-gradient(135deg,#3D5A32,#5C7A4D);color:#fff;padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 8px 28px rgba(61,90,50,.35);z-index:200;opacity:0;pointer-events:none;transition:.3s;max-width:90vw}
+.pw-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:760px){
+  .pw-stats{grid-template-columns:repeat(2,1fr)}
+  .pw-row{grid-template-columns:1fr 1fr;font-size:12px}
+  .pw-ops{grid-column:1/-1;text-align:left}
+}
+/* 药通网参考工具栏（价格表单内） */
+.yao-ref-bar{background:linear-gradient(135deg,#eef7ff,#f0f4ff);border:1px solid #c8d8f0;border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.yao-ref-title{font-size:13.5px;font-weight:700;color:#2b6cb0;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.yao-ref-btns{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.yao-ref-hint{font-size:12px;color:#5a7a9a;background:#fff;border-radius:8px;padding:8px 12px;line-height:1.55}
+/* 价格变动检测：独立悬浮入口（不在导航内） */
+.pw-fab{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--green-d),#3f5a34);color:#fff;border:none;border-radius:30px;
+  padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 8px 22px rgba(60,90,52,.35);
+  transition:transform .15s ease,box-shadow .15s ease}
+.pw-fab:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(60,90,52,.45)}
+.pw-fab:active{transform:translateY(0)}
+.pw-fab-ic{display:inline-flex;width:20px;height:20px}
+.pw-fab-ic svg{width:20px;height:20px}
+.pw-fab-tx{white-space:nowrap}
+.pw-fab-dot{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;border:2px solid #fff;box-shadow:0 0 6px rgba(220,53,69,.6)}
+/* 工作台总览：价格变动检测 独立快捷卡 */
+.pw-home{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,#F1F8EC,#E8F5E9);border-color:#cfe6c8}
+.pw-home-l{display:flex;align-items:center;gap:12px}
+.pw-home-ic{width:40px;height:40px;border-radius:11px;background:#fff;color:var(--green-d);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(60,90,52,.12)}
+.pw-home-ic svg{width:22px;height:22px}
+.pw-home-t{font-size:15px;font-weight:700;color:var(--green-d)}
+.pw-home-s{font-size:12.5px;color:#5a7a4a;margin-top:2px}
+.pw-home-r{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:640px){
+  .pw-fab{right:14px;bottom:14px;padding:11px 14px}
+  .pw-fab-tx{display:none}
+  .pw-fab{border-radius:50%;width:52px;height:52px;justify-content:center}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"/><path d="M12 12c0-4 4-7 8-7 0 4-3 8-8 8z"/><path d="M12 14c0-3-3-6-7-6 0 3 3 6 7 6z"/></svg></span>
+      <b>快快的工作台</b>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot">v1.0.0 · 数据存本地浏览器<br>离线可用 · 支持导入导出</div>
+  </aside>
+  <section class="main">
+    <div class="topbar">
+      <h1 id="pageTitle">工作台总览</h1>
+      <div class="cmd">
+        <input id="cmdInput" placeholder="输入 Skill 指令，如：查一下今年白芍的总销量和总销售额" />
+        <button class="btn" onclick="runCmd()">运行 Skill</button>
+      </div>
+      <div class="sync" id="syncBox" onclick="syncNow()" title="点击立即同步">
+        <span class="dot" id="syncDot"></span><span id="syncTxt">未开启</span>
+      </div>
+      <div class="usr" id="hdrUsr">
+        <span class="ava" id="hdrAva">我</span>
+        <button class="ico" title="设置" onclick="openSettings()">⚙</button>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </section>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box" id="modalBox"></div></div>
+<div class="file-modal" id="fileModal"><div class="fm-bar"><button class="btn ghost sm" onclick="closeFileModal()">关闭</button></div><div class="fm-body"></div></div>
+
+<!-- 价格变动检测：独立悬浮入口（不在导航内） -->
+<button class="pw-fab" id="pwFab" onclick="go('price_watch')" title="价格变动检测">
+  <span class="pw-fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15l5-5 4 3 7-7"/><path d="M16 6h4v4"/></svg></span>
+  <span class="pw-fab-tx">价格变动检测</span>
+  <span class="pw-fab-dot" id="pwFabDot" style="display:none"></span>
+</button>
+
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-logo">快快</div>
+    <h2 id="authTitle">快快的工作台</h2>
+    <p class="auth-sub" id="authSub"></p>
+    <div id="authBody"></div>
+  </div>
+</div>
+<div class="modal" id="setModal"><div class="modal-box" id="setBox"></div></div>
+
+<script>
+/* ===================== 数据模型定义 ===================== */
+const TODAY = new Date();
+const num = v => { const n = parseFloat(String(v).replace(/,/g,'')); return isNaN(n)?0:n; };
+const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ymd = d => d? new Date(d).toISOString().slice(0,10) : '';
+function daysBetween(a,b){ if(!a||!b) return ''; const d=(new Date(b)-new Date(a))/86400000; return Math.max(0,Math.round(d)); }
+function zhqiDays(s){ if(!s) return 0; const m=s.match(/(\d+)/); return m?+m[1]:0; }
+
+/* ===================== 文件 / 图片 上传 ===================== */
+const PF = {}; let PF_SEQ=0;          // 预览注册表：uid -> {name,type,data}
+let modalFiles = {};                  // 当前弹窗内各文件字段数组 {key:[{name,type,data}]}
+function readFileAsBase64(file){
+  return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res({name:file.name,type:file.type||'application/octet-stream',data:r.result}); r.onerror=rej; r.readAsDataURL(file); });
+}
+function isImageFile(f){ return f && f.type && String(f.type).indexOf('image/')===0; }
+function fileCellHtml(v){
+  if(!v||!v.length) return '—';
+  let h='<div class="cell-files">';
+  v.forEach(f=>{ const k='pf'+(++PF_SEQ); PF[k]=f;
+    if(isImageFile(f)) h+=`<img class="cell-thumb" src="${f.data}" onclick="showFile('${k}')" title="${esc(f.name)}">`;
+    else h+=`<span class="cell-file" onclick="showFile('${k}')">📎 ${esc(f.name)}</span>`; });
+  return h+'</div>';
+}
+function fileEditHtml(key){
+  let h=`<div class="file-list" id="filelist_${key}">`+fileListInner(key)+`</div>`;
+  h+=`<label class="file-add">＋ 添加图片/文件<input type="file" multiple onchange="onFilePicked(event,'${key}')"></label>`;
+  return h;
+}
+function fileListInner(key){
+  const arr=modalFiles[key]||[]; let h='';
+  arr.forEach((f,i)=>{ const ik='pf'+(++PF_SEQ); PF[ik]=f;
+    if(isImageFile(f)) h+=`<div class="file-item"><img class="thumb" src="${f.data}" onclick="showFile('${ik}')"><span class="fname">${esc(f.name)}</span><button class="fdel" onclick="delFile('${key}',${i})">×</button></div>`;
+    else h+=`<div class="file-item"><div class="ficon" onclick="showFile('${ik}')">📄</div><span class="fname">${esc(f.name)}</span><button class="fdel" onclick="delFile('${key}',${i})">×</button></div>`; });
+  return h;
+}
+async function onFilePicked(e,key){
+  const files=e.target.files; if(!files||!files.length) return;
+  if(!modalFiles[key]) modalFiles[key]=[];
+  for(const file of files){ try{ modalFiles[key].push(await readFileAsBase64(file)); }catch(err){} }
+  const el=document.getElementById('filelist_'+key); if(el) el.outerHTML=`<div class="file-list" id="filelist_${key}">`+fileListInner(key)+`</div>`;
+  e.target.value='';
+}
+function delFile(key,i){ if(modalFiles[key]) modalFiles[key].splice(i,1); const el=document.getElementById('filelist_'+key); if(el) el.outerHTML=`<div class="file-list" id="filelist_${key}">`+fileListInner(key)+`</div>`; }
+function showFile(k){ const f=PF[k]; const box=document.getElementById('fileModal'); if(!box||!f) return;
+  const body=box.querySelector('.fm-body');
+  if(isImageFile(f)) body.innerHTML=`<img src="${f.data}">`;
+  else body.innerHTML=`<div style="color:#fff;text-align:center"><p style="margin-bottom:16px">${esc(f.name)}</p><a class="btn" href="${f.data}" download="${esc(f.name)}">⬇ 下载文件</a></div>`;
+  box.classList.add('show');
+}
+function closeFileModal(){ const box=document.getElementById('fileModal'); if(box) box.classList.remove('show'); }
+
+// 字段类型：text/number/date/enum/bool/tags/textarea/file
+
+// 字段类型：text/number/date/enum/bool/tags/textarea
+const TABLES = {
+  website:{title:'工作网址导航',sub:'统一管理各平台网址、账号密码',cols:[
+    {k:'网址名称',t:'text'},{k:'网址',t:'text'},{k:'账号',t:'text'},{k:'密码',t:'text'},
+    {k:'登录流程备注',t:'textarea'},{k:'使用频率',t:'enum',opts:['日常','定期','偶尔']}]},
+  supplier:{title:'供应商库管理',sub:'资质审查 · GAP/一般基地 · GMP/趁鲜标识',cols:[
+    {k:'供应商名称',t:'text'},{k:'供应商类型',t:'enum',opts:['生产企业','经营企业','产地加工企业','合作社','农户']},
+    {k:'经营品种',t:'tags'},{k:'是否有GAP',t:'bool'},{k:'是否有趁鲜品种',t:'bool'},{k:'生产范围覆盖',t:'tags'},
+    {k:'公示链接',t:'text',showIf:{k:'是否有GAP',eq:true},hint:'GAP基地公示链接（有GAP时填写）'},
+    {k:'基地亩数',t:'number',hint:'单位：亩'},
+    {k:'质量保证协议',t:'file'},{k:'常规资质',t:'file'},{k:'GAP溯源趁鲜资料',t:'file'},{k:'备注',t:'textarea'}]},
+  jicai_purchase:{title:'集采品种采购',sub:'GAP / 非GAP 采购明细',cols:[
+    {k:'品种名称',t:'text'},{k:'规格等级',t:'enum',opts:['选货','统货','精选']},
+    {k:'集采批次',t:'enum',opts:['第一批中药饮片集采','第二批中药饮片集采','第三批中药饮片集采','第四批中药饮片集采','第五批中药饮片集采']},{k:'采购分类',t:'enum',opts:['GAP','非GAP']},
+    {k:'供应商类型',t:'enum',opts:['GAP','道地产区']},
+    {k:'产地',t:'text',hint:'可手动输入，如：安徽亳州、浙江磐安、四川中江等'},
+    {k:'采购量',t:'number'},
+    {k:'采购价格',t:'number'},{k:'采购总金额（元）',t:'number',readOnly:true,hint:'自动 = 采购价格 × 采购量（保存后写入）'},
+    {k:'集采中标价',t:'number',auto:true,hint:'按品种名称自动从「集采中标品种和价格」带出'},
+    {k:'采购时间',t:'date'},{k:'到货时间',t:'date'},
+    {k:'样品图片',t:'file'},{k:'合同',t:'file'},
+    {k:'采购记录',t:'textarea'},{k:'价格执行情况',t:'text'}]},
+  normal_purchase:{title:'常规品种采购',sub:'一般 / 毒性 / 国家保护品种',cols:[
+    {k:'品种名称',t:'text'},{k:'规格等级',t:'enum',opts:['选货','统货','精选']},
+    {k:'采购分类',t:'enum',opts:['一般中药材','毒性中药材','国家保护植物或动物']},
+    {k:'供应商类型',t:'enum',opts:['GAP','道地产区']},
+    {k:'产地',t:'enum',opts:['安徽亳州','浙江磐安','四川中江','安徽阜阳']},
+    {k:'采购量（kg）',t:'number'},
+    {k:'采购价格（元）',t:'number'},{k:'采购总金额（元）',t:'number',readOnly:true,hint:'自动 = 采购价格（元） × 采购量（kg）（保存后写入）'},
+    {k:'集采中标价',t:'number',auto:true,hint:'按品种名称自动从「集采中标品种和价格」带出'},
+    {k:'采购时间',t:'date'},{k:'到货时间',t:'date'},
+    {k:'样品图片',t:'file'},{k:'合同',t:'file'},
+    {k:'各批次采购记录',t:'textarea'}]},
+  win_price:{title:'集采中标品种和价格',sub:'集采中标价 + 各医院供货价 + 品种性状',cols:[
+    {k:'品种名称',t:'text'},{k:'集采批次',t:'text'},
+    {k:'中标规格',t:'text'},{k:'等级',t:'enum',opts:['选货','统货','精选']},
+    {k:'性状描述',t:'textarea'},
+    {k:'中标价格',t:'number',hint:'即集采品种中标价'},{k:'各医院供货价格',t:'textarea',hint:'每行：医院名称,单价,时间,数量'}]},
+  sales:{title:'销售记录',sub:'客户/合同/发票/物流一键跳转 · 应收款预警',cols:[
+    {k:'销售日期',t:'date'},{k:'销售公司',t:'text'},{k:'客户名称',t:'text',link:'customer'},{k:'品种名称',t:'text',def:'白芍'},
+    {k:'等级',t:'enum',opts:['选货','统货','精选','一二级','三四级']},
+    {k:'规格',t:'text'},
+    {k:'产地',t:'enum',opts:['安徽亳州','浙江磐安','四川中江','安徽阜阳']},{k:'销售数量',t:'number'},
+    {k:'销售单价',t:'number'},{k:'总金额',t:'number',auto:true},
+    {k:'销售合同订单号',t:'text',link:'contract'},
+    {k:'发票情况',t:'enum',opts:['已开票','未开票','部分开票'],link:'invoice'},
+    {k:'发票号',t:'text',link:'invoice'},{k:'开票日期',t:'date'},
+    {k:'已开发票金额',t:'number'},
+    {k:'回款情况',t:'enum',opts:['已回款','部分回款','未回款']},{k:'回款金额',t:'number'},
+    {k:'回款日期',t:'date'},{k:'账期情况',t:'enum',opts:['30天','60天','90天','120天','150天']},
+    {k:'应收款余额',t:'number',auto:true},{k:'欠款天数',t:'number',auto:true},
+    {k:'到期未回款金额',t:'number',auto:true},{k:'物流公司',t:'text',link:'logi'},
+    {k:'物流单号',t:'text'},{k:'发货日期',t:'date'},{k:'签收日期',t:'date'},
+    {k:'签收人',t:'text'},{k:'样品图片',t:'file'},{k:'销售合同',t:'file'},{k:'发票',t:'file'},
+    {k:'备注',t:'textarea'}]},
+  contract:{title:'合同档案库',sub:'合同扫描件归档',cols:[
+    {k:'合同编号',t:'text',link:'contract'},{k:'销售公司',t:'text'},{k:'客户名称',t:'text'},{k:'品种名称',t:'text',def:'白芍'},
+    {k:'规格等级',t:'enum',opts:['选货','统货','精选']},{k:'合同签订日期',t:'date'},
+    {k:'合同有效期',t:'date'},{k:'合同金额',t:'number'},{k:'合同文件',t:'file'},{k:'备注',t:'textarea'}]},
+  invoice:{title:'发票档案库',sub:'发票扫描件归档',cols:[
+    {k:'发票号',t:'text',link:'invoice'},{k:'销售公司',t:'text'},{k:'客户名称',t:'text'},{k:'发票日期',t:'date'},
+    {k:'发票金额',t:'number'},    {k:'发票类型',t:'enum',opts:['增值税专票','增值税普票']},
+    {k:'发票文件',t:'file'},{k:'备注',t:'textarea'}]},
+  logistics:{title:'物流跟踪',sub:'物流单号及签收状态',cols:[
+    {k:'客户名称',t:'text'},{k:'物流公司',t:'text',link:'logi'},{k:'物流单号',t:'text'},
+    {k:'发货日期',t:'date'},{k:'签收日期',t:'date'},{k:'签收人',t:'text'},{k:'状态',t:'text'}]},
+  customer:{title:'客户管理',sub:'客户信息 · 账期 · 中标与合同 · 联系人',cols:[
+    {k:'客户名称',t:'text',link:'customer'},
+    {k:'中标金额',t:'number'},
+    {k:'账期情况',t:'enum',opts:['30天','60天','90天','120天','150天','半年','一年']},
+    {k:'用货等级',t:'enum',opts:['统货','选货','精选']},
+    {k:'联系人1',t:'text'},{k:'联系人1职务',t:'text'},{k:'联系人1联系方式',t:'text'},
+    {k:'联系人2',t:'text'},{k:'联系人2职务',t:'text'},{k:'联系人2联系方式',t:'text'},
+    {k:'医院类型',t:'enum',opts:['公立医院','社区医院','军队医院']},
+    {k:'品种名称',t:'text',def:'白芍'},
+    {k:'规格等级',t:'enum',opts:['统货为主','选货为主','全部选货']},
+    {k:'中标总金额',t:'number'},
+    {k:'中标通知书编号',t:'text'},{k:'中标日期',t:'date'},
+    {k:'中标通知书附件',t:'file'},
+    {k:'合同编号',t:'text'},{k:'合同签订日期',t:'date'},
+    {k:'合同有效期',t:'date'},{k:'合同金额',t:'number'},
+    {k:'合同文件',t:'file'},
+    {k:'备注',t:'textarea'}]},
+  plan:{title:'计划管理',sub:'任务清单 · 日历视图',cols:[
+    {k:'标题',t:'text',hint:'任务名称'},
+    {k:'日期',t:'date',hint:'目标日期'},
+    {k:'标签',t:'enum',opts:['一般','重点','紧急','下周','本月'],def:'一般'},
+    {k:'完成',t:'bool',def:false},
+    {k:'分组',t:'text',hint:'可选，留空则归入未分组'},
+    {k:'备注',t:'textarea'}]},
+  price:{title:'中药材品种价格变化监测',sub:'数据源：药通网 www.yt1998.com',cols:[
+    {k:'品种名称',t:'text'},{k:'当前市场价格',t:'number',hint:'元/kg，请参考药通网实时报价'},{k:'上次监测价格',t:'number',hint:'波动对比基线（如上周/月初价格），从药通网历史价获取'},{k:'价格趋势判断',t:'enum',opts:['上涨','下跌','平稳','震荡']},
+    {k:'变动幅度(元)',t:'number',auto:true},{k:'变动百分比',t:'number',auto:true},
+    {k:'近期价格走势',t:'textarea',hint:'请参考药通网近7-30日K线/走势图填写'},
+    {k:'历史价格对比',t:'textarea',hint:'请参考药通网历史价格（1年/3年/5年）填写'},
+    {k:'影响因素',t:'textarea',hint:'请参考药通网行情分析（产新/库存/需求/政策等）'},
+    {k:'市场行情简报',t:'textarea',hint:'综合药通网信息整理的简报摘要'},
+    {k:'数据来源',t:'text',hint:'默认：药通网 www.yt1998.com'}]},
+};
+
+const ICONS = {
+  dashboard:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/>',
+  website:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/>',
+  supplier:'<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+  jicai_purchase:'<circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2 3h3l2.4 12h11l2-9H6"/>',
+  normal_purchase:'<path d="M6 8h12l1 12H5z"/><path d="M9 8V6a3 3 0 016 0v2"/>',
+  win_price:'<path d="M4 11l7-7 8 8-7 7z"/><circle cx="14.5" cy="9.5" r="1"/>',
+  sales:'<path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16l4-5 3 3 4-7"/>',
+  contract:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/>',
+  invoice:'<path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21z"/><path d="M9 8h6M9 12h6"/>',
+  logistics:'<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/>',
+  customer:'<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>',
+  plan:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/>',
+  price:'<path d="M4 15l5-5 4 3 7-7"/><path d="M16 6h4v4"/>',
+  reminders:'<path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/>',
+  agents:'<path d="M5 4h9a3 3 0 013 3v13H5z"/><path d="M5 4v16"/>',
+  data:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3 3 7 3s7-1.3 7-3v-6"/>',
+  skills:'<rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/>'
+};
+function icon(name){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">'+(ICONS[name]||'')+'</svg>'; }
+
+const NAV = [
+  {id:'dashboard',name:'工作台总览',icon:'dashboard'},
+  {group:'网站导航',items:[{id:'website',name:'工作网址导航',icon:'website'}]},
+  {group:'集采管理',items:[
+    {id:'supplier',name:'供应商库',icon:'supplier'},{id:'jicai_purchase',name:'集采品种采购',icon:'jicai_purchase'},
+    {id:'normal_purchase',name:'常规品种采购',icon:'normal_purchase'},{id:'win_price',name:'中标价格',icon:'win_price'}]},
+  {group:'白芍业务',items:[
+    {id:'sales',name:'销售记录',icon:'sales'},{id:'contract',name:'合同档案库',icon:'contract'},
+    {id:'invoice',name:'发票档案库',icon:'invoice'},{id:'logistics',name:'物流跟踪',icon:'logistics'}]},
+  {group:'投标管理',items:[
+    {id:'customer',name:'客户管理',icon:'customer'}]},
+  {group:'计划管理',items:[{id:'plan',name:'计划管理',icon:'plan'}]},
+  {group:'价格监测',items:[{id:'price',name:'价格变化监测',icon:'price'}]},
+  {group:'系统',items:[
+    {id:'reminders',name:'自动化提醒',icon:'reminders'},{id:'agents',name:'规则 AGENTS',icon:'agents'},
+    {id:'data',name:'数据 导入/导出',icon:'data'},{id:'skills',name:'27 个 Skill',icon:'skills'}]},
+];
+
+const LOGI_SITES = {'顺丰':'https://www.sf-express.com','德邦':'https://www.deppon.com',
+  '京东物流':'https://www.jdwl.com','中通':'https://www.zto.com','韵达':'https://www.yundaex.com'};
+
+/* ===================== 存储 ===================== */
+const KEY='tcm_workbench_v1';
+let DB = load();
+function load(){ try{ const d=JSON.parse(localStorage.getItem(KEY)); if(d&&d.tables) return d; }catch(e){} return {tables:{}}; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(DB)); onLocalChange(); }
+function rows(id){ return DB.tables[id]||[]; }
+function setRows(id,arr){ DB.tables[id]=arr; save(); }
+
+/* ===================== 自动计算 ===================== */
+function computeRow(id,row){
+  row=Object.assign({},row);
+  if(id==='jicai_purchase'||id==='normal_purchase'){
+    const doneKey = ['采购量（kg）','采购量','已采购量'].find(k=>Object.prototype.hasOwnProperty.call(row,k));
+    const done=num(doneKey?row[doneKey]:0);
+    // 剩余采购量 / 采购进度：仅当该表定义了「剩余采购量」列时才计算（依赖年度计划采购量）
+    if(TABLES[id].cols.some(c=>c.k==='剩余采购量')){
+      const plan=num(row['年度计划采购量']);
+      row['剩余采购量']=plan-done;
+      row['采购进度']= plan>0? (Math.round(done/plan*100)+'% / '+(done>=plan?'已完成':(done>0?'执行中':'待启动'))) : (done>0?'执行中':'待启动');
+    }
+    // 集采中标价：按品种名称自动从「集采中标品种和价格」带出
+    const vname=row['品种名称'];
+    if(vname){ const wp=rows('win_price').find(r=>r['品种名称']===vname); if(wp && wp['中标价格']!==undefined && wp['中标价格']!=='') row['集采中标价']=num(wp['中标价格']); }
+    // 采购总金额（元）= 采购价格 × 采购量
+    if(TABLES[id].cols.some(c=>c.k==='采购总金额（元）')){
+      const pk = Object.prototype.hasOwnProperty.call(row,'采购价格（元）')?'采购价格（元）':'采购价格';
+      if(doneKey && row[pk]!==undefined) row['采购总金额（元）']=num(row[pk])*num(row[doneKey]);
+    }
+  }
+  if(id==='sales'){
+    const q=num(row['销售数量']), p=num(row['销售单价']), back=num(row['回款金额']);
+    row['总金额']=q*p;
+    row['应收款余额']=q*p-back;
+    const ship=row['发货日期'];
+    row['欠款天数']= daysBetween(ship,TODAY);
+    const zd=zhqiDays(row['账期情况']);
+    row['到期未回款金额']= (ship && zd && daysBetween(ship,TODAY)>zd && (q*p-back)>0)? (q*p-back):0;
+  }
+  if(id==='price'){
+    const cur=num(row['当前市场价格']), prev=num(row['上次监测价格']);
+    if(cur && prev){ row['变动幅度(元)']=+(cur-prev).toFixed(2); row['变动百分比']=+((cur-prev)/prev*100).toFixed(2); }
+    else { row['变动幅度(元)']=0; row['变动百分比']=0; }
+  }
+  return row;
+}
+
+/* ===================== 渲染：导航 ===================== */
+function renderNav(){
+  const nav=document.getElementById('nav'); let h='';
+  for(const it of NAV){
+    if(it.group){ h+='<div class="grp">'+it.group+'</div>'; for(const s of it.items) h+=navItem(s); }
+    else h+=navItem(it);
+  }
+  nav.innerHTML=h;
+}
+function navItem(it){ return '<a data-id="'+it.id+'" onclick="go(\''+it.id+'\')"><span class="ni">'+icon(it.icon||'dashboard')+'</span><span>'+it.name+'</span></a>'; }
+function go(id){
+  _currentView=id; SYNC.lastView=id; saveSync();
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.dataset.id===id));
+  if(id==='plan'){ document.getElementById('pageTitle').textContent='计划管理'; renderPlan(); }
+  else if(id==='price_watch'){ document.getElementById('pageTitle').textContent='价格变动检测'; renderPriceWatch(); }
+  else if(TABLES[id]){ document.getElementById('pageTitle').textContent=TABLES[id].title; renderTable(id); }
+  else { document.getElementById('pageTitle').textContent=pageTitleOf(id); renderSpecial(id); }
+}
+function pageTitleOf(id){ const map={dashboard:'工作台总览',reminders:'自动化提醒',agents:'规则 AGENTS.md',data:'数据 导入/导出',skills:'27 个 Skill 清单',price_watch:'价格变动检测'}; return map[id]||id; }
+
+/* ===================== 渲染：表格视图 ===================== */
+function renderTable(id){
+  const t=TABLES[id]; const data=rows(id).map(r=>computeRow(id,r));
+  let h=`<div class="card"><h2>${t.title}</h2><div class="sub">${t.sub} · 共 ${data.length} 条记录</div>`;
+  h+=`<button class="btn sm" onclick="openAdd('${id}')">+ 添加行</button>`;
+  if(data.length===0){ h+=`<div class="empty">暂无数据。点击「+ 添加行」开始录入，或使用顶部 Skill 指令查询。</div></div>`; document.getElementById('content').innerHTML=h; return; }
+  h+='<table><thead><tr>';
+  for(const c of t.cols) h+=`<th>${c.k}</th>`;
+  h+='<th>操作</th></tr></thead><tbody>';
+  data.forEach((r,idx)=>{
+    let trc='';
+    if(id==='sales'){
+      if(r['回款情况']==='已回款') trc='row-paid';
+      else if(r['发票情况']==='已开票') trc='row-invoiced';
+    }
+    h+='<tr'+(trc?' class="'+trc+'"':'')+'>';
+    for(const c of t.cols){
+      let v=r[c.k];
+      if(c.t==='file'){ h+=`<td>${fileCellHtml(v)}</td>`; }
+      else if(c.link){ h+=`<td><a class="lk" onclick="openLink('${c.link}','${esc(v)}')">${esc(v)||'—'}</a></td>`; }
+      else if(c.t==='bool'){ h+=`<td>${v? '<span class="tag ok">是</span>':'<span class="tag">否</span>'}</td>`; }
+      else h+=`<td>${esc(v)||''}</td>`;
+    }
+    h+=`<td class="row-actions"><button class="btn sm ghost" onclick="openEdit('${id}',${idx})">编辑</button><button class="btn sm danger" onclick="delRow('${id}',${idx})">删除</button></td></tr>`;
+  });
+  h+='</tbody></table></div>';
+  document.getElementById('content').innerHTML=h;
+}
+function delRow(id,idx){ if(confirm('确定删除该行？')){ const a=rows(id); a.splice(idx,1); setRows(id,a); renderTable(id); } }
+
+/* ===================== 渲染：特殊页 ===================== */
+function renderSpecial(id){
+  if(id==='dashboard') return renderDashboard();
+  if(id==='reminders') return renderReminders();
+  if(id==='agents') return renderAgents();
+  if(id==='data') return renderData();
+  if(id==='skills') return renderSkills();
+}
+
+/* ===================== 渲染：计划管理（双面板） ===================== */
+let _planYM=null; // {y,m} 当前显示年月
+let _planCollapsed={}; // 分组折叠状态
+const TAG_COLORS={一般:'var(--green-l)',重点:'#fbf0d8',紧急:'#fdeaea',下周:'#e8f0fd',本月:'#f3e8fd'};
+const TAG_TEXT={一般:'var(--green-d)',重点:'var(--warn)',紧急:'var(--danger)',下周:'#1565c0',本月:'#7b1fa2'};
+
+function ymStr(y,m){ return y+'年'+m+'月'; }
+
+function migratePlanData(){
+  let a=rows('plan'), changed=false;
+  for(let i=0;i<a.length;i++){
+    const r=a[i];
+    if(r['内容']!==undefined && r['标题']===undefined){
+      r['标题']=r['内容']; delete r['内容']; changed=true;
+    }
+    if(r['状态']==='已完成'){ r['完成']=true; delete r['状态']; changed=true; }
+    else if(r['状态']!==undefined && r['完成']===undefined){ r['完成']=false; delete r['状态']; changed=true; }
+    if(r['周期']!==undefined){ delete r['周期']; changed=true; }
+  }
+  if(changed) setRows('plan',a);
+}
+
+function migrateData(){
+  let changed=false;
+  // 常规品种采购：采购量→采购量（kg），采购价格→采购价格（元），去除不再使用的年度计划采购量
+  let np=rows('normal_purchase');
+  for(const r of np){
+    if(r['采购量']!==undefined && r['采购量（kg）']===undefined){ r['采购量（kg）']=r['采购量']; delete r['采购量']; changed=true; }
+    if(r['采购价格']!==undefined && r['采购价格（元）']===undefined){ r['采购价格（元）']=r['采购价格']; delete r['采购价格']; changed=true; }
+    if(r['年度计划采购量']!==undefined){ delete r['年度计划采购量']; changed=true; }
+  }
+  if(changed) setRows('normal_purchase',np);
+  // 集采品种采购：集采目录归属→集采批次；移除已废弃的年度计划采购量 / 剩余采购量 / 采购进度
+  let jp=rows('jicai_purchase');
+  for(const r of jp){
+    if(r['集采目录归属']!==undefined && r['集采批次']===undefined){ r['集采批次']=r['集采目录归属']; delete r['集采目录归属']; changed=true; }
+    for(const k of ['年度计划采购量','剩余采购量','采购进度']) if(r[k]!==undefined){ delete r[k]; changed=true; }
+  }
+  if(changed) setRows('jicai_purchase',jp);
+  // 客户管理：联系方式→联系人1联系方式
+  let cu=rows('customer');
+  for(const r of cu){
+    if(r['联系方式']!==undefined && r['联系人1联系方式']===undefined){ r['联系人1联系方式']=r['联系方式']; delete r['联系方式']; changed=true; }
+  }
+  if(changed) setRows('customer',cu);
+  // 供应商库：企业类型→供应商类型（同值映射）；旧字段 基地类型(GAP/一般基地)→是否有GAP(bool)
+  let sp=rows('supplier');
+  for(const r of sp){
+    if(r['基地类型']==='GAP') r['是否有GAP']=true;
+    else if(r['基地类型']==='一般基地') r['是否有GAP']=false;
+    if(r['基地类型']!==undefined) delete r['基地类型'];
+    if(r['企业类型']!==undefined){ r['供应商类型']=r['企业类型']; delete r['企业类型']; }
+    changed=true;
+  }
+  if(sp.length) setRows('supplier',sp);
+}
+
+function getPlanTasks(){
+  migratePlanData();
+  return rows('plan').map((r,i)=>({...r,_idx:i}));
+}
+
+function togglePlanDone(idx){
+  const a=rows('plan');
+  if(a[idx]){ a[idx]['完成']=!a[idx]['完成']; setRows('plan',a); renderPlan(); }
+}
+
+function planCalMonth(offset){
+  if(!_planYM){ const d=new Date(); _planYM={y:d.getFullYear(),m:d.getMonth()+1}; }
+  _planYM.m+=offset;
+  if(_planYM.m>12){_planYM.m=1;_planYM.y++;}
+  if(_planYM.m<1){_planYM.m=12;_planYM.y--;}
+  renderPlan();
+}
+
+function planGoToday(){ _planYM=null; renderPlan(); }
+
+function quickAddTask(dateStr){
+  openAdd('plan');
+  setTimeout(()=>{
+    const dateEl=document.querySelector('#modalBox [data-k="日期"]');
+    if(dateEl){ dateEl.value=dateStr; }
+  },50);
+}
+
+function toggleGroup(g){
+  _planCollapsed[g]=!_planCollapsed[g];
+  const el=document.getElementById('pt_grp_'+escAttr(g));
+  if(el) el.classList.toggle('collapsed');
+}
+
+function escAttr(s){ return String(s||'').replace(/"/g,'&quot;').replace(/'/g,"&#39;"); }
+
+function renderPlan(){
+  const tasks=getPlanTasks();
+  if(!_planYM){ const d=new Date(); _planYM={y:d.getFullYear(),m:d.getMonth()+1}; }
+  const {_planYM:ym}= { _planYM }; // alias
+  const y=ym.y, m=ym.m;
+
+  // ---- 左侧：任务清单 ----
+  let left='<div class="card plan-list-card">';
+  left+='<div class="plan-header">';
+  left+='<h2 style="margin:0;font-size:16px">'+icon('plan')+' 任务清单</h2>';
+  left+='<span class="plan-month-label">'+ymStr(y,m)+'</span>';
+  left+='<button class="btn sm" onclick="openAdd(\'plan\')">+ 添加任务</button>';
+  left+='</div>';
+
+  // 分组聚合
+  const groups={};
+  const ungrouped=[];
+  for(const t of tasks){
+    const g=(t['分组']||'').trim()||null;
+    if(g){ if(!groups[g]) groups[g]=[]; groups[g].push(t); }
+    else ungrouped.push(t);
+  }
+
+  left+='<div class="plan-tasks">';
+
+  // 有分组的
+  const gNames=Object.keys(groups).sort();
+  if(gNames.length){
+    for(const gn of gNames){
+      const items=groups[gn];
+      const doneCnt=items.filter(t=>t['完成']).length;
+      const isCol=_planCollapsed[gn];
+      left+='<div class="pt-group" id="pt_grp_'+escAttr(gn)+'"'+(isCol?' class="pt-group collapsed"':'')+'>';
+      left+='<div class="pt-group-head" onclick="toggleGroup(\''+escAttr(gn)+'\')">';
+      left+='<span class="pt-group-arrow">'+(isCol?'▶':'▼')+'</span>';
+      left+='<span class="pt-group-name">'+esc(gn)+'</span>';
+      left+='<span class="pt-group-progress">'+doneCnt+'/'+items.length+'</span>';
+      left+='</div>';
+      if(!isCol){
+        left+='<div class="pt-items">';
+        for(const t of items) left+=renderPTItem(t);
+        left+='</div>';
+      }
+      left+='</div>';
+    }
+  }
+
+  // 无分组任务
+  for(const t of ungrouped) left+=renderPTItem(t);
+
+  if(!tasks.length) left+='<div class="empty" style="padding:28px">暂无任务。点击「+ 添加任务」开始规划。</div>';
+  left+='</div></div>'; // end plan-tasks, card
+
+  // ---- 右侧：日历 ----
+  const firstDay=new Date(y,m-1,1).getDay(); // 0=Sun
+  const startWd=(firstDay===0)?7:firstDay; // 转为周一=1 ... 周日=7
+  const daysInMonth=new Date(y,m,0).getDate();
+  const today=new Date(), todayStr=ymd(today);
+
+  let right='<div class="card plan-cal-card">';
+  right+='<div class="cal-header">';
+  right+='<button class="btn sm ghost" onclick="quickAddTask(\'\')" title="添加任务">+</button>';
+  right+='<span class="cal-title">'+ymStr(y,m)+'</span>';
+  right+='<div class="cal-nav">';
+  right+='<button class="btn sm ghost" onclick="planCalMonth(-1)" title="上个月">&lt;</button>';
+  right+='<button class="btn sm ghost cal-today-btn" onclick="planGoToday()">今天</button>';
+  right+='<button class="btn sm ghost" onclick="planCalMonth(1)" title="下个月">&gt;</button>';
+  right+='</div>';
+  right+='</div>';
+
+  // 星期头
+  right+='<div class="cal-grid">';
+  const wds=['一','二','三','四','五','六','日'];
+  for(const wd of wds) right+='<div class="cal-weekday">'+wd+'</div>';
+
+  // 上月补白
+  const prevDays=new Date(y,m-1,0).getDate();
+  for(let i=startWd-1;i>0;i--){
+    right+='<div class="cal-day other-month"><span class="cal-date-num">'+(prevDays-i+1)+'</span></div>';
+  }
+
+  // 本月日期
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday=ds===todayStr;
+    const dayTasks=tasks.filter(t=>t['日期']===ds);
+    right+='<div class="cal-day'+(isToday?' today':'')+'" onclick="quickAddTask(\''+ds+'\')">';
+    right+='<span class="cal-date-num'+(isToday?' today-num':'')+'">'+d+'</span>';
+    if(dayTasks.length){
+      right+='<div class="cal-day-tasks">';
+      for(const dt of dayTasks){
+        const tc=TAG_COLORS[dt['标签']]||TAG_COLORS['一般'];
+        const tt=TAG_TEXT[dt['标签']]||TAG_TEXT['一般'];
+        const doneCls=dt['完成']?' done':'';
+        right+='<span class="cal-task-pill '+doneCls+'" style="background:'+tc+';color:'+tt+'" title="'+esc(dt['标题'])+(dt['完成']?' ✓':'')+'" onclick="event.stopPropagation();openEdit(\'plan\','+dt._idx+')">'+esc(dt['标题'])+'</span>';
+      }
+      right+='</div>';
+    }
+    right+='</div>';
+  }
+
+  // 下月补白
+  const totalCells=startWd-1+daysInMonth;
+  const remain=totalCells%7?(7-totalCells%7):0;
+  for(let i=1;i<=remain;i++) right+='<div class="cal-day other-month"><span class="cal-date-num">'+i+'</span></div>';
+
+  right+='</div></div>'; // end cal-grid, card
+
+  // 组合输出
+  document.getElementById('content').innerHTML='<div class="plan-layout"><div class="plan-left">'+left+'</div><div class="plan-right">'+right+'</div></div>';
+}
+
+function renderPTItem(t){
+  const done=t['完成'];
+  const tag=t['标签']||'一般';
+  const tc=TAG_COLORS[tag]||TAG_COLORS['一般'];
+  const tt=TAG_TEXT[tag]||TAG_TEXT['一般'];
+  const dateStr=t['日期'];
+  let dueHtml='';
+  if(dateStr){
+    const today=new Date(), td=new Date(dateStr+'T00:00:00');
+    const diff=Math.ceil((td-today)/86400000);
+    if(diff<0) dueHtml='<span class="pt-due overdue">已过期'+Math.abs(diff)+'天</span>';
+    else if(diff===0) dueHtml='<span class="pt-due today">今天</span>';
+    else if(diff===1) dueHtml='<span class="pt-due">明天</span>';
+    else if(diff<=7) dueHtml='<span class="pt-due">剩余'+diff+'天</span>';
+    else dueHtml='<span class="pt-due far">'+dateStr.slice(5)+'</span>';
+  }
+  return '<div class="pt-item'+(done?' done':'')+'">'
+    +'<label class="pt-check"><input type="checkbox"'+(done?' checked':'')+' onchange="togglePlanDone('+t._idx+')"><span class="pt-check-box"></span></label>'
+    +'<span class="pt-title'+(done?' done':'')+'" onclick="openEdit(\'plan\','+t._idx+')">'+esc(t['标题']||'无标题')+'</span>'
+    +'<span class="pt-tag" style="background:'+tc+';color:'+tt+'">'+esc(tag)+'</span>'
+    +dueHtml
+    +'</div>';
+}
+
+function renderDashboard(){
+  const d=new Date();
+  const dateStr=d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';
+  let h='<div class="card hero">';
+  h+='<div class="h-txt"><h1>'+icon('dashboard')+' 工作台总览</h1>';
+  h+='<p>快快的工作管理平台</p>';
+  h+='<span class="date">今日 · '+dateStr+'</span></div>';
+  h+='<svg class="hero-art" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">';
+  h+='<path d="M60 110V50"/>';
+  h+='<path d="M60 60C60 38 78 22 104 22c0 22-18 38-44 38z" fill="rgba(255,255,255,.12)"/>';
+  h+='<path d="M60 66C60 46 44 32 20 32c0 20 16 34 40 34z" fill="rgba(255,255,255,.12)"/>';
+  h+='<path d="M60 78c0-14 8-24 22-28M60 84c0-12-8-20-22-24"/></svg>';
+  h+='</div>';
+  // 价格变动检测 独立快捷卡（不在导航内，单独列出）
+  const plist=rows('price').map(r=>computeRow('price',r));
+  const pvalid=plist.filter(r=>r['当前市场价格']!==undefined && r['当前市场价格']!=='');
+  const pwp=pvalid.filter(r=>r['上次监测价格']!==undefined && r['上次监测价格']!=='');
+  const palerts=pwp.filter(r=>Math.abs(r['变动百分比']||0)>=PW_ALERT);
+  const plast=localStorage.getItem('tcm_pw_last')||'尚未检测';
+  h+='<div class="card pw-home">';
+  h+='<div class="pw-home-l"><div class="pw-home-ic">'+icon('price')+'</div><div><div class="pw-home-t">价格变动检测</div><div class="pw-home-s">监测品种 <b>'+pvalid.length+'</b> · 预警 <b>'+(palerts.length?('<span class="tag danger">'+palerts.length+'</span>'):'0')+'</b> 个 · 上次检测 '+esc(plast)+'</div></div></div>';
+  h+='<div class="pw-home-r"><button class="btn sm" onclick="runPriceWatchCheck(true)">立即检测</button><button class="btn sm ghost" onclick="go(\'price_watch\')">查看详情</button></div>';
+  h+='</div>';
+  h+='<div class="card"><h2>数据快照</h2><div class="sub">各模块记录数一览</div><div class="stats">';
+  for(const id in TABLES){ h+='<div class="stat"><span class="ic">'+icon(id)+'</span><div><div class="n">'+rows(id).length+'</div><div class="l">'+TABLES[id].title+'</div></div></div>'; }
+  h+='</div></div>';
+  const sales=rows('sales').map(r=>computeRow('sales',r));
+  const overdue=sales.filter(r=>num(r['到期未回款金额'])>0);
+  const totalRec=sales.reduce((s,r)=>s+num(r['应收款余额']),0);
+  h+='<div class="card"><div class="sec-title">⚠ 应收款与逾期预警</div>';
+  if(sales.length===0) h+='<div class="hint">暂无销售记录。录入白芍销售后，此处自动汇总应收款与超期未回款客户（按账期+发货日期计算）。</div>';
+  else{
+    h+='<div class="hint">总应收款 <b>'+fmt(totalRec)+'</b> 元；超期未回款客户 <b>'+overdue.length+'</b> 家。</div>';
+    if(overdue.length){ h+='<table><thead><tr><th>客户名称</th><th>应收款余额</th><th>欠款天数</th><th>账期</th><th>到期未回款</th></tr></thead><tbody>';
+      overdue.slice().sort((a,b)=>num(b['到期未回款金额'])-num(a['到期未回款金额'])).forEach(r=>{
+        h+='<tr><td><a class="lk" onclick="openLink(\'customer\',\''+esc(r['客户名称'])+'\')">'+esc(r['客户名称'])+'</a></td><td>'+fmt(num(r['应收款余额']))+'</td><td>'+r['欠款天数']+'</td><td>'+esc(r['账期情况'])+'</td><td><span class="tag danger">'+fmt(num(r['到期未回款金额']))+'</span></td></tr>';
+      }); h+='</tbody></table>'; }
+  }
+  h+='<div class="sec-title">⚡ 常用指令（点击填入命令栏）</div><div class="chips">';
+  const quick=['查一下今年白芍的总销量和总销售额','哪些客户有超期未回款','查一下白芍的中标价格是多少','给我今天的待办清单','筛选出有GAP和趁鲜品种的供应商名单'];
+  quick.forEach(q=>h+='<button class="chip" onclick="fillCmd(\''+esc(q)+'\')">'+esc(q)+'</button>');
+  h+='</div></div>';
+  document.getElementById('content').innerHTML=h;
+}
+function renderReminders(){
+  const list=[
+    {cr:'0 8 * * *',n:'每日待办提醒',d:'每天早上8点推送今日待办清单 + 新招标公告',a:['生成今日待办清单','抓取本周新发布的招标公告','筛选含「中药饮片」的公告','推送至工作台']},
+    {cr:'0 9 * * 1',n:'每周销售汇总',d:'每周一上午9点汇总上周销售数据',a:['统计上周白芍销售总额','统计上周各客户采购明细','生成周报','推送至工作台']},
+    {cr:'0 10 1 * *',n:'每月客户统计',d:'每月1号统计各客户中标与联系人情况',a:['统计各客户中标金额','更新客户联系人信息','标记重点客户','生成月度客户报表','推送至工作台']},
+    {cr:'0 10 1 */3 *',n:'季度目标检查',d:'每季度末检查年度目标完成率',a:['计算年度营业额完成率','计算供应商拓展完成率','输出偏差报告','推送至工作台']},
+    {cr:'0 10 * * *',n:'供应商资质到期提醒',d:'每天检查供应商资质有效期，到期前30天提醒',a:['检查所有供应商资质有效期','筛选到期前30天内的','生成到期提醒清单','推送至工作台']},
+    {cr:'0 9 * * *',n:'每日价格波动检测',d:'每天9点参考药通网检测各品种价格波动，超'+'5'+'%自动推送预警',a:['从药通网获取当日报价','比对各品种监测基线','标记涨跌超5%品种','推送价格波动预警']},
+  ];
+  let h=`<div class="card"><h2>自动化提醒配置</h2><div class="sub">Cron 格式 · 5 条定时任务（离线模板，需在运行环境配置调度器）</div>`;
+  list.forEach(r=>{ h+=`<div class="cron-box"><div class="cr">${r.cr}</div><div style="flex:1"><b>${r.n}</b><div class="sub" style="margin:2px 0 6px">${r.d}</div>`;
+    r.a.forEach(s=>h+=`<span class="pill" style="margin-right:6px;margin-bottom:4px;display:inline-block">${s}</span>`); h+='</div></div>'; });
+  h+='</div>'; document.getElementById('content').innerHTML=h;
+}
+
+/* ===================== 渲染：价格变动检测 ===================== */
+const YAO_WEB='https://www.yt1998.com';
+const YAO_MINI='#小程序://药通网/MOPkwvZOdBF1ciF';
+const PW_ALERT=5; // 涨跌预警阈值（%）
+
+function renderPriceWatch(){
+  const raw=rows('price');
+  const list=raw.map((r,i)=>Object.assign({_idx:i},computeRow('price',r)));
+  const last=localStorage.getItem('tcm_pw_last')||'尚未检测';
+
+  const valid=list.filter(r=>r['当前市场价格']!==undefined && r['当前市场价格']!=='');
+  const withPrev=valid.filter(r=>r['上次监测价格']!==undefined && r['上次监测价格']!=='');
+  const up=withPrev.filter(r=>(r['变动百分比']||0)>0);
+  const down=withPrev.filter(r=>(r['变动百分比']||0)<0);
+  const alerts=withPrev.filter(r=>Math.abs(r['变动百分比']||0)>=PW_ALERT);
+
+  let h='<div class="card pw-head">';
+  h+='<div><h2>📊 价格变动检测</h2><div class="sub">实时参考药通网价格波动 · 每日自动检测推送</div></div>';
+  h+='<div class="pw-actions"><button class="btn sm" onclick="openAdd(\'price\')">+ 录入/更新价格</button><button class="btn sm ghost" onclick="runPriceWatchCheck(true)">立即检测波动</button></div>';
+  h+='</div>';
+
+  // 药通网参考卡
+  h+='<div class="card pw-yao">';
+  h+='<div class="pw-yao-title">🔗 数据源参考：药通网（每日报价 · 10 年历史）</div>';
+  h+='<div class="pw-yao-links"><a class="btn sm" href="'+YAO_WEB+'" target="_blank" rel="noopener">打开药通网网页</a>';
+  h+='<span class="pw-mini" title="微信内打开：'+esc(YAO_MINI)+'">小程序：'+esc(YAO_MINI)+'</span></div>';
+  h+='<div class="pw-last">上次自动检测：'+esc(last)+'</div>';
+  h+='</div>';
+
+  // 统计
+  h+='<div class="pw-stats">'+pwStat('监测品种',valid.length,'')+pwStat('上涨',up.length,'up')+pwStat('下跌',down.length,'down')+pwStat('预警(≥'+PW_ALERT+'%)',alerts.length,'alert')+'</div>';
+
+  // 列表
+  if(!valid.length){
+    h+='<div class="card"><div class="empty">尚未录入价格数据。点击「+ 录入/更新价格」从药通网录入各品种当前价格，并填写「上次监测价格」作为波动基线。</div></div>';
+  } else {
+    h+='<div class="card"><div class="sub" style="margin-bottom:10px">波动明细（涨跌绝对值 ≥ '+PW_ALERT+'% 标记为预警）</div><div class="pw-list">';
+    valid.forEach(r=>{
+      const pct=r['变动百分比']||0;
+      const dir=pct>0?'up':(pct<0?'down':'flat');
+      const hasPrev=(r['上次监测价格']!==undefined && r['上次监测价格']!=='');
+      const alert=hasPrev && Math.abs(pct)>=PW_ALERT;
+      let deltaTxt='持平';
+      if(hasPrev && pct!==0) deltaTxt=(pct>0?'▲ +':'▼ ')+pct+'%';
+      else if(!hasPrev) deltaTxt='未设基线';
+      h+='<div class="pw-row'+(alert?' pw-alert':'')+'">';
+      h+='<div class="pw-name">'+esc(r['品种名称']||'未命名')+(alert?' <span class="pw-badge">预警</span>':'')+'</div>';
+      h+='<div class="pw-price">当前 <b>'+fmt(r['当前市场价格'])+'</b> 元/kg · 基线 '+fmt(r['上次监测价格']!==undefined?r['上次监测价格']:'—')+'</div>';
+      h+='<div class="pw-delta '+dir+'">'+deltaTxt+'</div>';
+      h+='<div class="pw-trend">'+esc(r['价格趋势判断']||'—')+'</div>';
+      h+='<div class="pw-ops"><button class="btn sm ghost" onclick="openEdit(\'price\','+r._idx+')">更新</button></div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+  }
+  document.getElementById('content').innerHTML=h;
+  updatePwFab();
+}
+function pwStat(label,val,cls){ return '<div class="pw-stat '+(cls||'')+'"><div class="pw-stat-v">'+val+'</div><div class="pw-stat-l">'+label+'</div></div>'; }
+
+function runPriceWatchCheck(showToast){
+  const list=rows('price').map(r=>computeRow('price',r));
+  const valid=list.filter(r=>r['当前市场价格']!==undefined && r['当前市场价格']!=='');
+  const withPrev=valid.filter(r=>r['上次监测价格']!==undefined && r['上次监测价格']!=='');
+  const up=withPrev.filter(r=>(r['变动百分比']||0)>0);
+  const down=withPrev.filter(r=>(r['变动百分比']||0)<0);
+  const alerts=withPrev.filter(r=>Math.abs(r['变动百分比']||0)>=PW_ALERT);
+  const now=new Date();
+  localStorage.setItem('tcm_pw_last', ymd(now)+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'));
+  if(showToast){
+    if(!valid.length) toastPW('价格变动检测：尚未录入价格数据');
+    else if(alerts.length) toastPW('⚠ 价格波动预警：'+alerts.length+' 个品种涨跌超 '+PW_ALERT+'%（'+up.length+' 涨 / '+down.length+' 跌）');
+    else toastPW('📊 价格波动检测：'+up.length+' 涨 / '+down.length+' 跌，无超 '+PW_ALERT+'% 预警');
+  }
+  return {alerts,up,down,total:valid.length,withPrev:withPrev.length};
+}
+/** 更新右下角「价格变动检测」悬浮入口的预警红点 */
+function updatePwFab(){
+  try{
+    const list=rows('price').map(r=>computeRow('price',r));
+    const withPrev=list.filter(r=>r['当前市场价格']!==undefined && r['当前市场价格']!=='' && r['上次监测价格']!==undefined && r['上次监测价格']!=='');
+    const alerts=withPrev.filter(r=>Math.abs(r['变动百分比']||0)>=PW_ALERT);
+    const dot=document.getElementById('pwFabDot');
+    if(!dot) return;
+    if(alerts.length){ dot.style.display='inline-block'; dot.textContent=alerts.length>9?'9+':alerts.length; dot.title=alerts.length+' 个品种价格波动预警'; }
+    else dot.style.display='none';
+  }catch(e){}
+}
+function toastPW(msg){
+  try{
+    let t=document.getElementById('pwToast');
+    if(!t){ t=document.createElement('div'); t.id='pwToast'; t.className='pw-toast'; (document.body||document.documentElement).appendChild(t); }
+    t.textContent=msg; t.classList.add('show');
+    clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),6000);
+    if('Notification' in window && Notification.permission==='granted'){ try{ new Notification('快快的工作台 · 价格波动',{body:msg}); }catch(e){} }
+  }catch(e){}
+}
+
+function renderAgents(){
+  const md=document.getElementById('content');
+  md.innerHTML=`<div class="card"><h2>规则 AGENTS.md</h2><div class="sub">写给 AI 的入职须知（与 工作台根目录/AGENTS.md 同步）</div>
+  <pre># 工作台规则说明
+
+## 我的角色
+- 身份：中药饮片经营业务兼职从业者
+- 主品种：白芍
+- 副品种：其他中药材（偶尔）
+
+## 常用术语
+GAP 中药材生产质量管理规范（种植基地认证）｜GMP 药品生产质量管理规范｜趁鲜切制 产地趁鲜加工｜集采 集中采购（医保局组织）｜选货/统货 饮片规格等级｜毒性中药材 列入《医疗用毒性药品管理办法》｜国家保护品种 列入国家保护名录
+
+## 目录规则
+供应商资质：01_集采管理/供应商库/{供应商名称}/
+合同文件：02_白芍销售/合同档案/
+发票文件：02_白芍销售/发票档案/
+客户信息：03_旺达客户/｜价格数据：05_价格监测/
+
+## 命名规范
+合同：{合同编号}_{客户名称}_{签订日期}.pdf
+发票：{发票号}_{客户名称}_{开票日期}.pdf
+供应商资质：{企业名称}_{资质类型}_{有效期}.pdf
+
+## 输出规则
+默认保存到 06_产出/；确认后移至正式目录；新版本加日期后缀，不覆盖原文件
+
+## 自动化提醒
+每天08:00 今日待办+新招标公告｜每周一09:00 上周销售汇总｜每月01号 各客户回款统计+逾期标记｜每季度末 年度目标完成率检查｜资质到期前30天 提醒</pre></div>`;
+}
+function forceClearSW(){
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(function(regs){
+        Promise.all(regs.map(function(r){return r.unregister();})).then(function(){
+          if('caches' in window){ caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){return caches.delete(k);})); }).then(function(){ location.reload(true); }); }
+          else location.reload(true);
+        }).catch(function(){ location.reload(true); });
+      }).catch(function(){ location.reload(true); });
+    } else { location.reload(true); }
+  }catch(e){ location.reload ? location.reload(true) : window.location.reload(); }
+}
+function renderData(){
+  let h=`<div class="card"><h2>数据 导入 / 导出</h2><div class="sub">全部业务数据存于本地浏览器（localStorage），可导出备份或导入恢复。</div>`;
+  h+=`<button class="btn" onclick="exportJSON()">⬇ 导出全部数据 (JSON)</button> `;
+  h+=`<label class="btn ghost" style="display:inline-block;cursor:pointer">⬆ 导入 JSON<input type="file" id="importFile" accept="application/json" onchange="importJSON(this)" style="display:none"></label>`;
+  h+=`<button class="btn danger" style="margin-left:8px" onclick="clearAll()">🗑 清空全部数据</button>`;
+  h+=`<button class="btn ghost" style="margin-left:8px" onclick="forceClearSW()">🔄 清除网站缓存并刷新</button>`;
+  h+=`<div class="hint" style="margin-top:14px">说明：表格默认<b>空模板</b>（不预填业务数据）。请在各模块「+ 添加行」录入；AI/Skill 查询将基于你录入的数据实时计算。</div>`;
+  h+=`<div class="sec-title">当前各表记录数</div><div class="kv">`;
+  for(const id in TABLES) h+=`<b>${TABLES[id].title}</b><span>${rows(id).length} 条</span>`;
+  h+='</div>';
+  /* ---- 云同步设置 ---- */
+  h+='<div class="card"><h2>☁ 云端同步设置</h2><div class="sub">配置同步服务端后，电脑与手机连同一服务端即可互通办公（数据存于你自己的服务端）。</div>';
+  h+='<div class="field"><label class="sw"><input type="checkbox" id="syncOn" '+(SYNC.enabled?'checked':'')+' onchange="syncToggle(this.checked)"> 启用云端同步</label></div>';
+  h+='<div class="field"><label>服务端地址（留空 = 同源 /api，即前端与服务端部署在同一地址）</label><input id="syncUrl" placeholder="https://你的服务.onrender.com" value="'+esc(SYNC.url)+'"></div>';
+  h+='<div class="field"><label>访问密钥 ACCESS_KEY（须与服务端一致）</label><input id="syncKey" type="password" placeholder="与服务端一致" value="'+esc(SYNC.key)+'"></div>';
+  h+='<div class="field"><label>同步模式</label><select id="syncMode"><option value="auto" '+(SYNC.mode==='auto'?'selected':'')+'>自动（改动后自动推送）</option><option value="manual" '+(SYNC.mode==='manual'?'selected':'')+'>手动（仅点同步按钮时推送）</option></select></div>';
+  h+='<button class="btn" onclick="syncSave()">保存同步设置</button> ';
+  h+='<button class="btn ghost" onclick="syncTest()">测试连接</button> <span id="syncTestMsg" class="pill"></span>';
+  h+='<div class="hint" style="margin-top:12px">说明：「自建云端同步」包内的 <b>sync-server</b> 即为服务端。部署拿到地址后填到这里、设好密钥即可。多台设备用同一密钥即共享同一份数据；改「同步模式」为手动可仅在点击右上角同步按钮时上传。</div>';
+  h+='</div>';
+  document.getElementById('content').innerHTML=h; setSyncStatus(SYNC.status);
+}
+function renderSkills(){
+  const list=[
+    ['工作网址导航','招标公告自动抓取','每天8点帮我查本周哈尔滨市中药饮片相关的招标公告'],
+    ['供应商库管理','供应商资质审查','审查[企业名称]的资质文件是否齐全'],
+    ['供应商库管理','供应商比选','筛选出有GAP和趁鲜品种的供应商名单'],
+    ['集采品种采购','采购计划进度查询','查看[品种]的年度采购进度'],
+    ['集采品种采购','采购量分配建议','给[品种]的GAP供应商分配[X]%采购量'],
+    ['常规品种采购','毒性药材采购校验','校验所有毒性中药材供应商的资质'],
+    ['常规品种采购','保护品种采购提醒','查看国家保护品种的合法来源证明是否齐全'],
+    ['中标价格管理','价格查询','查一下[品种]的中标价格是多少'],
+    ['中标价格管理','医院价格比对','查一下[品种]在[医院名称]的供货价格'],
+    ['白芍销售管理','销售统计','查一下今年白芍的总销量和总销售额'],
+    ['白芍销售管理','客户销售排名','查一下今年各客户的采购总额排名'],
+    ['白芍销售管理','毛利分析','统计白芍各规格的毛利率排名'],
+    ['白芍销售管理','应收款查询','查看当前白芍应收款情况'],
+    ['白芍销售管理','逾期客户筛选','哪些客户有超期未回款'],
+    ['白芍销售管理','合同调取','查看合同号[合同编号]'],
+    ['白芍销售管理','发票调取','调出发票号[发票号]'],
+    ['白芍销售管理','物流查询','查一下发往[客户名称]的货到哪了'],
+    ['白芍销售管理','对账单导出','导出本月对账单'],
+    ['合同档案库','合同列表','列出本月所有新签合同'],
+    ['发票档案库','发票列表','导出本月所有已开票记录'],
+    ['客户管理','客户查询','查一下旺达客户里[客户名称]的中标金额'],
+    ['客户管理','客户筛选','旺达客户中哪些是精选客户'],
+    ['客户管理','客户更新','更新[客户名称]的联系方式为XXX'],
+    ['计划管理','今日待办','给我今天的待办清单'],
+    ['计划管理','周计划生成','生成本周投标工作清单'],
+    ['价格监测','市场行情查询','查一下[品种]现在什么价格'],
+    ['价格监测','价格趋势分析','分析[品种]近一年的价格走势'],
+  ];
+  let h=`<div class="card"><h2>27 个 Skill 清单</h2><div class="sub">在顶部命令栏输入触发指令即可运行；点击指令可填入命令栏。</div><table><thead><tr><th>序号</th><th>所属模块</th><th>Skill</th><th>触发指令</th></tr></thead><tbody>`;
+  list.forEach((r,i)=>{ h+=`<tr><td>${i+1}</td><td>${r[0]}</td><td>${r[1]}</td><td><a class="lk" onclick="fillCmd('${esc(r[2].replace(/[\[\]]/g,''))}')">${esc(r[2])}</a></td></tr>`; });
+  h+='</tbody></table></div>'; document.getElementById('content').innerHTML=h;
+}
+
+/* ===================== 添加 / 编辑 行 模态框 ===================== */
+function buildForm(id,row){
+  const t=TABLES[id]; let body=`<h3>${row?'编辑 · '+t.title:'添加 · '+t.title}</h3>`;
+  modalFiles={};
+  const trigKeys=new Set(t.cols.filter(c=>c.showIf).map(c=>c.showIf.k));
+  for(const c of t.cols){
+    if(c.auto) continue;
+    const val=row?row[c.k]:null;
+    const sif=c.showIf?` data-cfield="${escAttr(c.k)}"`:'';
+    body+=`<div class="field"${sif}><label>${c.k}${c.hint?' <span style="color:#9aa">('+c.hint+')</span>':''}</label>`;
+    if(c.t==='file'){
+      modalFiles[c.k]= (row && Array.isArray(val))? val.slice() : [];
+      body+=`<div class="file-wrap" id="fw_${c.k}">${fileEditHtml(c.k)}</div>`;
+    }
+    else if(c.t==='enum'){ const cur=val||c.def||''; const trig=trigKeys.has(c.k)?` onchange="applyShowIf('${id}')"`:''; body+=`<select data-k="${c.k}"${trig}><option value="">—</option>`+c.opts.map(o=>`<option ${cur===o?'selected':''}>${o}</option>`).join('')+`</select>`; }
+    else if(c.t==='bool'){ const cur=(val===true||val==='true')?'true':(val===false||val==='false')?'false':''; const trig=trigKeys.has(c.k)?` onchange="applyShowIf('${id}')"`:''; body+=`<select data-k="${c.k}"${trig}><option value="">—</option><option value="true" ${cur==='true'?'selected':''}>是</option><option value="false" ${cur==='false'?'selected':''}>否</option></select>`; }
+    else if(c.t==='tags'){ body+=`<input data-k="${c.k}" value="${val?esc(String(val)):''}" placeholder="多个用逗号分隔" onchange="onFieldChange('${id}','${c.k}',this)">`; }
+    else if(c.t==='textarea'){ body+=`<textarea data-k="${c.k}" placeholder="${c.hint||''}" onchange="onFieldChange('${id}','${c.k}',this)">${val!=null?esc(String(val)):''}</textarea>`; }
+    else { const ro=c.readOnly?' disabled':''; body+=`<input data-k="${c.k}" type="${c.t==='number'?'number':(c.t==='date'?'date':'text')}" value="${val!=null?esc(String(val)):esc(c.def||'')}" placeholder="${c.hint||''}"${ro} onchange="onFieldChange('${id}','${c.k}',this)">`; }
+    body+='</div>';
+  }
+  return body;
+}
+function openAdd(id){
+  let extra='';
+  if(id==='price') extra=yaoRefBar('');
+  document.getElementById('modalBox').innerHTML=extra+buildForm(id,null)+`<div class="modal-actions"><button class="btn ghost" onclick="closeModal()">取消</button><button class="btn" onclick="saveAdd('${id}')">保存</button></div>`;
+  applyShowIf(id); if(id==='jicai_purchase'||id==='normal_purchase') recomputePurchaseTotal(id); document.getElementById('modal').classList.add('show');
+}
+function openEdit(id,idx){
+  let extra='';
+  if(id==='price') extra=yaoRefBar(rows(id)[idx]['品种名称']||'');
+  document.getElementById('modalBox').innerHTML=extra+buildForm(id,rows(id)[idx])+`<div class="modal-actions"><button class="btn ghost" onclick="closeModal()">取消</button><button class="btn" onclick="saveEdit('${id}',${idx})">保存</button></div>`;
+  applyShowIf(id); if(id==='jicai_purchase'||id==='normal_purchase') recomputePurchaseTotal(id); document.getElementById('modal').classList.add('show');
+}
+/** 药通网参考工具栏（价格表单专用） */
+function yaoRefBar(variety){
+  const q=encodeURIComponent(variety||'');
+  const searchUrl=YAO_WEB+(variety?'/search.html?keyword='+q:'');
+  return `<div class="yao-ref-bar">
+    <div class="yao-ref-title">🔗 参考药通网 · 实时价格数据源</div>
+    <div class="yao-ref-btns">
+      <a class="btn sm" href="${YAO_WEB}" target="_blank" rel="noopener">🌐 打开药通网首页</a>
+      ${variety?'<a class="btn sm" href="'+searchUrl+'" target="_blank" rel="noopener">🔍 搜索「'+esc(variety)+'」</a>':'<button class="btn sm ghost" onclick="yaoPickVariety()">📋 先填品种名再搜索</button>'}
+      <span class="pw-mini" title="微信内打开：${esc(YAO_MINI)}">小程序：${esc(YAO_MINI)}</span>
+    </div>
+    <div class="yao-ref-hint">💡 填写提示：当前市场价格、走势、历史对比、影响因素、简报等字段均请参考药通网实时数据填写</div>
+  </div>`;
+}
+/** 提示用户先填写品种名 */
+function yaoPickVariety(){
+  const box=document.getElementById('modalBox'); if(!box) return;
+  const el=box.querySelector('[data-k="品种名称"]');
+  if(el){ el.focus(); el.scrollIntoView({block:'center'}); }
+}
+function applyShowIf(id){
+  const box=document.getElementById('modalBox'); if(!box) return;
+  const t=TABLES[id]; if(!t) return;
+  const vals={};
+  t.cols.forEach(c=>{ const e=fieldEl(box,c.k); if(e) vals[c.k]=e.value; });
+  t.cols.forEach(c=>{
+    if(!c.showIf) return;
+    const wrap=box.querySelector('[data-cfield="'+escAttr(c.k)+'"]');
+    if(wrap) wrap.style.display=(String(vals[c.showIf.k])===String(c.showIf.eq))?'':'none';
+  });
+}
+function collectRow(id){
+  const box=document.getElementById('modalBox'); const row={};
+  box.querySelectorAll('[data-k]').forEach(el=>{ const v=el.value; row[el.dataset.k]= (el.tagName==='SELECT'&&v==='true')?true:(el.tagName==='SELECT'&&v==='false')?false:v; });
+  for(const c of TABLES[id].cols){ if(c.t==='file') row[c.k]= modalFiles[c.k]||[]; }
+  return row;
+}
+function saveAdd(id){ const row=collectRow(id); const a=rows(id); a.push(computeRow(id,row)); setRows(id,a); closeModal(); renderTable(id); if(id==='customer') syncCustomerFromSales(); if(id==='price') updatePwFab(); }
+function saveEdit(id,idx){ const row=collectRow(id); const a=rows(id); a[idx]=computeRow(id,row); setRows(id,a); closeModal(); renderTable(id); if(id==='customer') syncCustomerFromSales(); if(id==='price') updatePwFab(); }
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+/* ===================== 表单字段联动 ===================== */
+function fieldEl(box,k){ return Array.from(box.querySelectorAll('[data-k]')).find(e=>e.dataset.k===k); }
+function valOf(box,k){ const e=fieldEl(box,k); return e?e.value.trim():''; }
+function setVal(box,k,v){ const e=fieldEl(box,k); if(e && ((e.value===''||e.value==null) || e.tagName==='SELECT')) e.value=v; }
+function onFieldChange(id,key,el){
+  if(id==='price' && key==='品种名称') return refreshYaoRef(el.value);
+  if((id==='jicai_purchase'||id==='normal_purchase') && (key==='采购价格'||key==='采购价格（元）'||key==='采购量'||key==='采购量（kg）')) return recomputePurchaseTotal(id);
+  if(id==='contract' && (key==='销售合同订单号'||key==='客户名称')) return autoFillContract();
+  if(id==='invoice' && (key==='发票号'||key==='客户名称')) return autoFillInvoice();
+}
+/** 采购表：实时重算 采购总金额（元）= 采购价格 × 采购量（自动定位各表字段名） */
+function recomputePurchaseTotal(id){
+  const box=document.getElementById('modalBox'); if(!box) return;
+  const t=TABLES[id]; if(!t) return;
+  const priceKey=t.cols.find(c=>c.t==='number'&&['采购价格（元）','采购价格'].includes(c.k));
+  const qtyKey=t.cols.find(c=>c.t==='number'&&['采购量（kg）','采购量','已采购量'].includes(c.k));
+  if(!priceKey||!qtyKey) return;
+  const priceEl=box.querySelector('[data-k="'+escAttr(priceKey.k)+'"]');
+  const qtyEl=box.querySelector('[data-k="'+escAttr(qtyKey.k)+'"]');
+  const totalEl=box.querySelector('[data-k="采购总金额（元）"]');
+  if(!totalEl || !priceEl || !qtyEl) return;
+  const p=parseFloat(priceEl.value)||0, q=parseFloat(qtyEl.value)||0;
+  totalEl.value = p*q;
+}
+/** 刷新药通网参考栏中的搜索按钮（品种名变化时） */
+function refreshYaoRef(variety){
+  const bar=document.querySelector('.yao-ref-bar'); if(!bar) return;
+  const btns=bar.querySelector('.yao-ref-btns'); if(!btns) return;
+  const q=encodeURIComponent(variety||'');
+  const searchUrl=YAO_WEB+(variety?'/search.html?keyword='+q:'');
+  // 替换第2个按钮（搜索/提示）
+  const children=btns.children;
+  if(children.length>=3){
+    if(variety){
+      children[1].outerHTML='<a class="btn sm" href="'+searchUrl+'" target="_blank" rel="noopener">🔍 搜索「'+esc(variety)+'」</a>';
+    } else {
+      children[1].outerHTML='<button class="btn sm ghost" onclick="yaoPickVariety()">📋 先填品种名再搜索</button>';
+    }
+  }
+}
+// 合同档案库：输入销售合同订单号 / 客户名称，自动从销售记录生成合同
+function autoFillContract(){
+  const box=document.getElementById('modalBox'); if(!box) return;
+  const order=valOf(box,'销售合同订单号'), cust=valOf(box,'客户名称');
+  let src=null;
+  if(order) src=rows('sales').find(r=>r['销售合同订单号']===order);
+  if(!src && cust) src=rows('sales').slice().reverse().find(r=>r['客户名称']===cust);
+  if(!src) return;
+  if(!valOf(box,'客户名称')) setVal(box,'客户名称',src['客户名称']||'');
+  if(!valOf(box,'销售公司')) setVal(box,'销售公司',src['销售公司']||'');
+  if(!valOf(box,'品种名称')) setVal(box,'品种名称',src['品种名称']||'');
+  if(!valOf(box,'规格等级')) setVal(box,'规格等级',src['等级']||'');
+  const amt=src['总金额']; if(amt!==undefined && amt!=='' && num(amt)>0 && !valOf(box,'合同金额')) setVal(box,'合同金额',amt);
+}
+// 发票档案库：输入发票号 / 客户名称，自动从销售记录生成发票
+function autoFillInvoice(){
+  const box=document.getElementById('modalBox'); if(!box) return;
+  const no=valOf(box,'发票号'), cust=valOf(box,'客户名称');
+  let src=null;
+  if(no) src=rows('sales').find(r=>r['发票号']===no);
+  if(!src && cust) src=rows('sales').slice().reverse().find(r=>r['客户名称']===cust);
+  if(!src) return;
+  if(!valOf(box,'客户名称')) setVal(box,'客户名称',src['客户名称']||'');
+  if(!valOf(box,'销售公司')) setVal(box,'销售公司',src['销售公司']||'');
+  const amt=src['总金额'];
+  if(amt!==undefined && amt!=='' && num(amt)>0 && !valOf(box,'发票金额')) setVal(box,'发票金额',amt);
+}
+
+/* ===================== 关联跳转 ===================== */
+function openLink(type,val){
+  if(!val||val==='—'){ alert('该字段为空，无法跳转。'); return; }
+  if(type==='logi'){ const url=LOGI_SITES[val]; if(url) window.open(url,'_blank'); else alert('未配置「'+val+'」的物流官网，请在 config/associations.sql 中补充映射。'); return; }
+  if(type==='contract'){ const f=rows('contract').find(r=>r['合同编号']===val); if(f){ showCard('合同档案：'+val, kvHtml(f)); } else { showCard('合同调取',`<div class="hint">未找到合同编号「${esc(val)}」。请先在「合同档案库」录入。</div>`); } return; }
+  if(type==='invoice'){ const f=rows('invoice').find(r=>r['发票号']===val); if(f){ showCard('发票档案：'+esc(val), kvHtml(f)); } else { showCard('发票调取',`<div class="hint">未找到发票号「${esc(val)}」。请先在「发票档案库」录入。</div>`); } return; }
+  if(type==='customer'){ const f=rows('customer').find(r=>r['客户名称']===val); if(f){ showCard('客户详情：'+esc(val), kvHtml(f)); } else { showCard('客户详情',`<div class="hint">客户「${esc(val)}」尚未在客户管理中建档。可前往「客户管理」添加。</div>`); } return; }
+}
+function kvHtml(obj){ let h='<div class="kv">'; for(const k in obj){ const v=obj[k]; if(k===''||v===''||v==null) continue; if(Array.isArray(v)&&v.length){ h+=`<b>${esc(k)}</b><span>${fileCellHtml(v)}</span>`; } else { h+=`<b>${esc(k)}</b><span>${esc(v)}</span>`; } } return h+'</div>'; }
+function showCard(title,body){ document.getElementById('content').innerHTML=`<div class="card"><h2>${title}</h2><div class="result">${body}</div><div style="margin-top:12px"><button class="btn ghost sm" onclick="go('dashboard')">返回总览</button></div></div>`; document.getElementById('pageTitle').textContent=title.replace(/[：:].*/,''); }
+
+/* ===================== 命令栏 / Skill 引擎 ===================== */
+function fillCmd(q){ document.getElementById('cmdInput').value=q; document.getElementById('cmdInput').focus(); }
+function runCmd(){ const v=document.getElementById('cmdInput').value.trim(); if(!v){alert('请输入指令');return;} const res=routeSkill(v); showResult(v,res); }
+function showResult(cmd,html){ document.getElementById('content').innerHTML=`<div class="card"><h2>Skill 执行结果</h2><div class="sub">指令：${esc(cmd)}</div><div class="result">${html}</div><div style="margin-top:14px"><button class="btn ghost sm" onclick="go('dashboard')">返回总览</button></div></div>`; document.getElementById('pageTitle').textContent='Skill 结果'; }
+
+function findCustomer(name){ if(!name) return null; return rows('customer').find(r=>r['客户名称']===name) || rows('customer').find(r=>r['客户名称'].includes(name)||name.includes(r['客户名称'])); }
+function findInList(list,key,val){ if(!val) return null; return list.find(r=>(r[key]||'')===val) || list.find(r=>(r[key]||'').includes(val)||String(val).includes(r[key]||'')); }
+function extract(input,re,fallback){ const m=input.match(re); if(m) return m[1]; if(fallback) return fallback; return ''; }
+
+function routeSkill(input){
+  const i=input;
+  // 销售统计
+  if(/总销量|总销售额|今年.*销量|今年.*销售额/.test(i)&&/白芍/.test(i)) return skSalesStat();
+  if(/各客户.*采购总额排名|客户.*排名|采购总额排名/.test(i)) return skCustomerRank();
+  if(/毛利/.test(i)) return skGrossMargin();
+  if(/应收款/.test(i)) return skReceivable();
+  if(/超期|逾期|超期未回款/.test(i)) return skOverdue();
+  // 合同/发票调取
+  let m=i.match(/合同[号]?([A-Za-z0-9\-]+)/); if(/查看合同|合同调取|调取.*合同/.test(i)&&m) return skGetContract(m[1]);
+  m=i.match(/发票[号]?([A-Za-z0-9\-]+)/); if(/发票调取|调出.*发票|查看发票/.test(i)&&m) return skGetInvoice(m[1]);
+  // 物流
+  if(/货到哪|物流查询|物流/.test(i)){ const c=findNameIn(i,'customer'); return skLogistics(c); }
+  // 对账单
+  if(/对账单/.test(i)) return skStatement();
+  // 合同/发票列表
+  if(/新签合同|合同列表|列出.*合同/.test(i)) return skContractList();
+  if(/已开票记录|发票列表|导出.*发票/.test(i)) return skInvoiceList();
+  // 集采
+  if(/中标价格|中标价/.test(i)){ const v=findVariety(i); return skWinPrice(v); }
+  if(/供货价格|医院.*价格/.test(i)){ const v=findVariety(i),h=findNameIn(i,'customer'); return skHospitalPrice(v,h); }
+  if(/采购进度/.test(i)){ const v=findVariety(i); return skPurchaseProgress(v); }
+  if(/分配.*采购量|采购量分配/.test(i)){ const v=findVariety(i),p=i.match(/(\d+)\s*%/); return skAllocate(v,p?+p[1]:60); }
+  // 供应商
+  if(/资质.*审查|审查.*资质/.test(i)){ const s=findNameIn(i,'supplier'); return skReview(s); }
+  if(/比选|GAP.*趁鲜|趁鲜.*供应商|供应商名单/.test(i)) return skCompare();
+  if(/毒性.*校验|毒性.*资质/.test(i)) return skToxicCheck();
+  if(/保护品种|国家保护/.test(i)) return skProtectCheck();
+  // 客户
+  if(/中标金额|联系人/.test(i)){ const c=findNameIn(i,'customer'); return skCustQuery(c); }
+  if(/用货(统货|选货|精选)|(统货|选货|精选).*客户|筛选.*(统货|选货|精选)/.test(i)){ const m=i.match(/统货|选货|精选/); return skCustFilter(m?m[0]:'精选'); }
+  if(/更新.*联系方式|联系方式.*更新/.test(i)){ const c=findNameIn(i,'customer'); const ph=i.match(/[0-9\-]{6,}/); return skCustUpdate(c,ph?ph[0]:''); }
+  // 计划
+  if(/今日待办|待办清单/.test(i)) return skToday();
+  if(/周计划|投标工作清单/.test(i)) return skWeekPlan();
+  // 价格监测
+  if(/价格变动|价格波动|涨跌提醒|价格预警/.test(i)){ return skPriceWatch(); }
+  if(/价格走势|趋势分析/.test(i)){ const v=findVariety(i); return skTrend(v); }
+  if(/什么价格|现在什么价格|市场行情|行情/.test(i)){ const v=findVariety(i); return skMarket(v); }
+  // 招标公告
+  if(/招标公告|公告抓取/.test(i)) return skTender();
+  return `<div class="hint">未匹配到已知 Skill。试试常用指令，或在「27 个 Skill 清单」页点击触发示例。例如：</div>
+    <ul><li>查一下今年白芍的总销量和总销售额</li><li>哪些客户有超期未回款</li><li>查一下白芍的中标价格是多少</li><li>给我今天的待办清单</li></ul>`;
+}
+function findVariety(i){ const known=[...new Set([...rows('sales'),...rows('win_price'),...rows('price'),...rows('jicai_purchase'),...rows('normal_purchase')].map(r=>r['品种名称']).filter(Boolean))]; let f=known.find(n=>i.includes(n)); if(f) return f; const common=['白芍','白术','甘草','柴胡','当归','黄芪','党参','川芎','地黄','连翘']; return common.find(c=>i.includes(c))||''; }
+function findNameIn(i,id){ const known=rows(id).map(r=> id==='supplier'?r['供应商名称']:r['客户名称']).filter(Boolean); return known.find(n=>i.includes(n))||''; }
+
+/* ===================== Skill 实现 ===================== */
+const fmt = n => num(n).toLocaleString('zh-CN',{maximumFractionDigits:2});
+function skSalesStat(){
+  const list=rows('sales').map(r=>computeRow('sales',r)).filter(r=>r['销售日期']&&new Date(r['销售日期']).getFullYear()===TODAY.getFullYear());
+  if(!list.length) return hintEmpty('白芍销售记录','今年暂无销售记录，录入后此处汇总总销量与总销售额。');
+  const qty=list.reduce((s,r)=>s+num(r['销售数量']),0), amt=list.reduce((s,r)=>s+num(r['总金额']),0);
+  const byC={}; list.forEach(r=>byC[r['客户名称']]=(byC[r['客户名称']]||0)+num(r['总金额']));
+  let h=`<h3>📊 今年白芍销售统计</h3><div class="kv"><b>总销量</b><span>${fmt(qty)} kg</span><b>总销售额</b><span>${fmt(amt)} 元</span><b>记录数</b><span>${list.length} 笔</span></div>`;
+  h+=`<div class="sec-title">各客户占比</div><table><thead><tr><th>客户</th><th>销售额</th><th>占比</th></tr></thead><tbody>`;
+  Object.entries(byC).sort((a,b)=>b[1]-a[1]).forEach(([c,v])=>{ h+=`<tr><td>${esc(c)}</td><td>${fmt(v)}</td><td>${(v/amt*100).toFixed(1)}%</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skCustomerRank(){
+  const list=rows('sales').map(r=>computeRow('sales',r)).filter(r=>r['销售日期']&&new Date(r['销售日期']).getFullYear()===TODAY.getFullYear());
+  if(!list.length) return hintEmpty('白芍销售记录','今年暂无销售记录。');
+  const byC={}; list.forEach(r=>byC[r['客户名称']]=(byC[r['客户名称']]||0)+num(r['总金额']));
+  let h=`<h3>🏆 今年各客户采购总额排名</h3><table><thead><tr><th>排名</th><th>客户</th><th>采购总额</th></tr></thead><tbody>`;
+  Object.entries(byC).sort((a,b)=>b[1]-a[1]).forEach(([c,v],i)=>{ h+=`<tr><td>${i+1}</td><td><a class="lk" onclick="openLink('customer','${esc(c)}')">${esc(c)}</a></td><td>${fmt(v)} 元</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skGrossMargin(){
+  const list=rows('sales').map(r=>computeRow('sales',r));
+  if(!list.length) return hintEmpty('白芍销售记录','暂无销售记录，无法做规格排名。');
+  const byG={}; list.forEach(r=>{ const g=r['等级']||'未分级'; byG[g]=byG[g]||{q:0,amt:0}; byG[g].q+=num(r['销售数量']); byG[g].amt+=num(r['总金额']); });
+  let h=`<h3>📈 白芍各等级销售额排名</h3><div class="hint">说明：毛利率需「采购成本」数据。当前按销售额排名展示；如需真实毛利率，请在销售记录补充采购单价或在中标/采购表中取成本。</div><table><thead><tr><th>等级</th><th>销量(kg)</th><th>销售额</th></tr></thead><tbody>`;
+  Object.entries(byG).sort((a,b)=>b[1].amt-a[1].amt).forEach(([g,v])=>{ h+=`<tr><td>${esc(g)}</td><td>${fmt(v.q)}</td><td>${fmt(v.amt)}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skReceivable(){
+  const list=rows('sales').map(r=>computeRow('sales',r));
+  if(!list.length) return hintEmpty('白芍销售记录','暂无销售记录。');
+  const byC={}; list.forEach(r=>{ const c=r['客户名称']; byC[c]=byC[c]||{bal:0,due:0}; byC[c].bal+=num(r['应收款余额']); byC[c].due+=num(r['到期未回款金额']); });
+  const total=Object.values(byC).reduce((s,v)=>s+v.bal,0);
+  let h=`<h3>💰 当前白芍应收款情况</h3><div class="kv"><b>总应收款</b><span>${fmt(total)} 元</span><b>涉及客户</b><span>${Object.keys(byC).length} 家</span></div><table><thead><tr><th>客户</th><th>应收款余额</th><th>到期未回款</th></tr></thead><tbody>`;
+  Object.entries(byC).sort((a,b)=>b[1].bal-a[1].bal).forEach(([c,v])=>{ h+=`<tr><td><a class="lk" onclick="openLink('customer','${esc(c)}')">${esc(c)}</a></td><td>${fmt(v.bal)}</td><td>${v.due>0?'<span class="tag danger">'+fmt(v.due)+'</span>':fmt(v.due)}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skOverdue(){
+  const list=rows('sales').map(r=>computeRow('sales',r)).filter(r=>num(r['到期未回款金额'])>0);
+  if(!list.length) return `<h3>⚠ 逾期客户筛选</h3><div class="hint">暂无超期未回款客户（或尚未录入销售记录）。超期判定：发货日期至今 > 账期天数 且 应收款余额>0。</div>`;
+  let h=`<h3>⚠ 超期未回款客户（按金额排序）</h3><table><thead><tr><th>客户</th><th>应收款余额</th><th>欠款天数</th><th>账期</th><th>到期未回款</th><th>催收建议</th></tr></thead><tbody>`;
+  list.sort((a,b)=>num(b['到期未回款金额'])-num(a['到期未回款金额'])).forEach(r=>{
+    h+=`<tr><td><a class="lk" onclick="openLink('customer','${esc(r['客户名称'])}')">${esc(r['客户名称'])}</a></td><td>${fmt(r['应收款余额'])}</td><td>${r['欠款天数']}</td><td>${esc(r['账期情况'])}</td><td><span class="tag danger">${fmt(r['到期未回款金额'])}</span></td><td>已超账期，建议电话/函件催收并核对签收单</td></tr>`;
+  });
+  return h+'</tbody></table>';
+}
+function skGetContract(no){ const f=findInList(rows('contract'),'合同编号',no); if(!f) return `<h3>合同调取：${esc(no)}</h3><div class="hint">未找到该合同。请先在「合同档案库」录入合同编号。</div>`; return `<h3>📄 合同：${esc(no)}</h3>`+kvHtml(f); }
+function skGetInvoice(no){ const f=findInList(rows('invoice'),'发票号',no); if(!f) return `<h3>发票调取：${esc(no)}</h3><div class="hint">未找到该发票。请先在「发票档案库」录入发票号。</div>`; return `<h3>🧾 发票：${esc(no)}</h3>`+kvHtml(f); }
+function skLogistics(c){
+  let rec=rows('logistics').filter(r=>!c||r['客户名称']===c||r['客户名称'].includes(c));
+  const salesRec=rows('sales').map(r=>computeRow('sales',r)).filter(r=>!c||r['客户名称']===c||r['客户名称'].includes(c)).filter(r=>r['物流公司']&&r['物流单号']);
+  if(!rec.length&&!salesRec.length) return `<h3>🚚 物流查询${c?'：'+esc(c):''}</h3><div class="hint">未找到${c?esc(c)+'的':''}发货/物流记录。请在「物流跟踪」或「销售记录」填写物流公司与单号。</div>`;
+  let h=`<h3>🚚 物流查询${c?'：'+esc(c):''}</h3><table><thead><tr><th>客户</th><th>物流公司</th><th>物流单号</th><th>发货</th><th>签收</th><th>操作</th></tr></thead><tbody>`;
+  rec.forEach(r=>{ const url=LOGI_SITES[r['物流公司']]; h+=`<tr><td>${esc(r['客户名称'])}</td><td>${esc(r['物流公司'])}</td><td>${esc(r['物流单号'])}</td><td>${esc(r['发货日期'])}</td><td>${esc(r['签收日期'])}</td><td>${url?`<a class="lk" href="${url}" target="_blank">查官网</a>`:'—'}</td></tr>`; });
+  salesRec.forEach(r=>{ const url=LOGI_SITES[r['物流公司']]; h+=`<tr><td>${esc(r['客户名称'])}</td><td>${esc(r['物流公司'])}</td><td>${esc(r['物流单号'])}</td><td>${esc(r['发货日期'])}</td><td>${esc(r['签收日期'])}</td><td>${url?`<a class="lk" href="${url}" target="_blank">查官网</a>`:'—'}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skStatement(){
+  const y=TODAY.getFullYear(),m=TODAY.getMonth(); const list=rows('sales').map(r=>computeRow('sales',r)).filter(r=>r['销售日期']&&new Date(r['销售日期']).getFullYear()===y&&new Date(r['销售日期']).getMonth()===m);
+  if(!list.length) return `<h3>📑 本月对账单</h3><div class="hint">${y}年${m+1}月暂无销售记录。</div>`;
+  const byC={}; list.forEach(r=>{ const c=r['客户名称']; byC[c]=byC[c]||{q:0,amt:0,back:0}; byC[c].q+=num(r['销售数量']); byC[c].amt+=num(r['总金额']); byC[c].back+=num(r['回款金额']); });
+  let h=`<h3>📑 对账单 · ${y}年${m+1}月</h3><table><thead><tr><th>客户</th><th>销量(kg)</th><th>销售额</th><th>已回款</th><th>应收款</th></tr></thead><tbody>`;
+  let lines=`对账单 ${y}-${String(m+1).padStart(2,'0')}\n`;
+  Object.entries(byC).forEach(([c,v])=>{ h+=`<tr><td>${esc(c)}</td><td>${fmt(v.q)}</td><td>${fmt(v.amt)}</td><td>${fmt(v.back)}</td><td>${fmt(v.amt-v.back)}</td></tr>`; lines+=`${c}\t${v.q}\t${v.amt}\t${v.back}\t${v.amt-v.back}\n`; });
+  h+='</tbody></table>';
+  download('对账单_'+y+String(m+1).padStart(2,'0')+'.txt',lines);
+  h+=`<div class="hint">✅ 已生成对账单文件并自动下载（保存至 06_产出/）。</div>`;
+  return h;
+}
+function skContractList(){
+  const y=TODAY.getFullYear(),m=TODAY.getMonth(); const list=rows('contract').filter(r=>r['合同签订日期']&&new Date(r['合同签订日期']).getFullYear()===y&&new Date(r['合同签订日期']).getMonth()===m);
+  if(!list.length) return `<h3>📄 本月新签合同</h3><div class="hint">${y}年${m+1}月暂无新签合同。</div>`;
+  let h=`<h3>📄 本月新签合同（${list.length} 份）</h3><table><thead><tr><th>合同编号</th><th>客户</th><th>签订日期</th><th>金额</th></tr></thead><tbody>`;
+  list.forEach(r=>{ h+=`<tr><td><a class="lk" onclick="openLink('contract','${esc(r['合同编号'])}')">${esc(r['合同编号'])}</a></td><td>${esc(r['客户名称'])}</td><td>${esc(r['合同签订日期'])}</td><td>${fmt(r['合同金额'])}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skInvoiceList(){
+  const y=TODAY.getFullYear(),m=TODAY.getMonth(); const list=rows('invoice').filter(r=>r['发票日期']&&new Date(r['发票日期']).getFullYear()===y&&new Date(r['发票日期']).getMonth()===m);
+  if(!list.length) return `<h3>🧾 本月已开票记录</h3><div class="hint">${y}年${m+1}月暂无开票记录。</div>`;
+  let h=`<h3>🧾 本月已开票记录（${list.length} 张）</h3><table><thead><tr><th>发票号</th><th>客户</th><th>日期</th><th>金额</th><th>类型</th></tr></thead><tbody>`;
+  list.forEach(r=>{ h+=`<tr><td><a class="lk" onclick="openLink('invoice','${esc(r['发票号'])}')">${esc(r['发票号'])}</a></td><td>${esc(r['客户名称'])}</td><td>${esc(r['发票日期'])}</td><td>${fmt(r['发票金额'])}</td><td>${esc(r['发票类型'])}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skWinPrice(v){
+  if(!v) return `<h3>中标价格查询</h3><div class="hint">未识别品种。请说明品种，如：查一下白芍的中标价格是多少。</div>`;
+  const f=findInList(rows('win_price'),'品种名称',v); if(!f) return `<h3>中标价格：${esc(v)}</h3><div class="hint">未在中标价格表中找到「${esc(v)}」。请先在「中标价格」录入该品种集采中标价与各医院供货价。</div>`;
+  let h=`<h3>🏅 中标价格：${esc(v)}</h3><div class="kv"><b>集采批次</b><span>${esc(f['集采批次'])||'—'}</span><b>中标价格</b><span>${fmt(f['中标价格'])} 元/kg</span></div>`;
+  if(f['各医院供货价格']){ h+=`<div class="sec-title">各医院供货价格</div><pre class="mono">${esc(f['各医院供货价格'])}</pre>`; }
+  return h;
+}
+function skHospitalPrice(v,h){
+  if(!v) return `<h3>医院价格比对</h3><div class="hint">未识别品种。</div>`;
+  const f=findInList(rows('win_price'),'品种名称',v); if(!f) return `<h3>医院价格比对：${esc(v)}</h3><div class="hint">未找到「${esc(v)}」的中标价格记录。</div>`;
+  let h2=`<h3>🔍 ${esc(v)} 医院供货价比对</h3><div class="kv"><b>中标价格</b><span>${fmt(f['中标价格'])} 元/kg</span></div>`;
+  if(h) h2+=`<div class="hint">指定医院：${esc(h)}</div>`;
+  if(f['各医院供货价格']) h2+=`<pre class="mono">${esc(f['各医院供货价格'])}</pre>`;
+  else h2+=`<div class="hint">尚未录入各医院供货价格明细。</div>`;
+  return h2;
+}
+function skPurchaseProgress(v){
+  if(!v) return `<h3>采购进度查询</h3><div class="hint">未识别品种。如：查看白芍的年度采购进度。</div>`;
+  const list=[...rows('jicai_purchase'),...rows('normal_purchase')].filter(r=>r['品种名称']===v||(r['品种名称']||'').includes(v));
+  if(!list.length) return `<h3>采购进度：${esc(v)}</h3><div class="hint">未找到「${esc(v)}」的采购计划。请在「集采品种采购 / 常规品种采购」录入。</div>`;
+  let h=`<h3>📦 采购进度：${esc(v)}</h3><table><thead><tr><th>类型</th><th>规格</th><th>分类</th><th>计划量</th><th>已采</th><th>剩余</th><th>进度</th></tr></thead><tbody>`;
+  list.forEach(r=>{ const isJ=rows('jicai_purchase').includes(r); const rc=computeRow(isJ?'jicai_purchase':'normal_purchase', r); const qk=['采购量（kg）','已采购量','采购量'].find(k=>rc[k]!==undefined); h+=`<tr><td>${isJ?'集采':'常规'}</td><td>${esc(rc['规格等级'])}</td><td>${esc(rc['采购分类'])}</td><td>${isJ?fmt(rc['年度计划采购量']):'—'}</td><td>${fmt(rc[qk])}${rc['采购总金额（元）']!==undefined?'（¥'+fmt(rc['采购总金额（元）'])+'）':''}</td><td>${isJ?fmt(rc['剩余采购量']):'—'}</td><td>${esc(rc['采购进度'])}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skAllocate(v,p){
+  if(!v) return `<h3>采购量分配</h3><div class="hint">未识别品种。</div>`;
+  const f=findInList(rows('jicai_purchase'),'品种名称',v); if(!f) return `<h3>采购量分配：${esc(v)} ${p}%</h3><div class="hint">未找到「${esc(v)}」的集采采购计划（需有 GAP 标识的品种）。</div>`;
+  const plan=num(f['年度计划采购量']), gap=plan*p/100;
+  return `<h3>🤝 采购量分配建议：${esc(v)} 的 GAP 供应商分配 ${p}%</h3><div class="kv"><b>年度计划采购量</b><span>${fmt(plan)} kg</span><b>GAP 供应商应分配</b><span>${fmt(gap)} kg（${p}%）</span><b>其余来源</b><span>${fmt(plan-gap)} kg（${100-p}%）</span></div><div class="hint">建议：在「供应商比选」中筛选有 GAP 的供应商，按其产能拆分 ${fmt(gap)} kg。</div>`;
+}
+function skReview(s){
+  if(!s) return `<h3>供应商资质审查</h3><div class="hint">未识别供应商名称。如：审查四川好人堂的资质文件是否齐全。</div>`;
+  const f=findInList(rows('supplier'),'供应商名称',s); if(!f) return `<h3>资质审查：${esc(s)}</h3><div class="hint">未找到供应商「${esc(s)}」。请先在「供应商库」建档。</div>`;
+  const chk=[
+    ['营业执照/许可证(常规资质)', !!f['常规资质']],
+    ['是否有GAP（基地）', f['是否有GAP']===true],
+    ['趁鲜品种资质', f['是否有趁鲜品种']===true],
+    ['质量保证协议', !!f['质量保证协议']],
+  ];
+  let h=`<h3>🔎 资质审查：${esc(s)}（${esc(f['供应商类型']||'')}）</h3><table><thead><tr><th>审查项</th><th>状态</th></tr></thead><tbody>`;
+  let ok=0; chk.forEach(([n,p])=>{ h+=`<tr><td>${n}</td><td>${p?'<span class="tag ok">✓ 齐全</span>':'<span class="tag warn">⚠ 缺失/未填</span>'}</td></tr>`; if(p)ok++; });
+  h+=`</tbody></table><div class="hint">审查结论：${ok}/${chk.length} 项齐全。${ok<chk.length?'请补齐缺失项后再参与集采供货。':''}</div>`;
+  return h;
+}
+function skCompare(){
+  const list=rows('supplier').filter(r=>r['是否有GAP']===true&&r['是否有趁鲜品种']===true);
+  if(!list.length) return `<h3>供应商比选：GAP + 趁鲜</h3><div class="hint">未找到同时满足「是否有GAP 为是」且「有趁鲜品种」的供应商。请在「供应商库」维护对应字段。</div>`;
+  let h=`<h3>✅ 符合「有 GAP + 有趁鲜品种」的供应商（${list.length} 家）</h3><table><thead><tr><th>供应商</th><th>供应商类型</th><th>经营品种</th><th>生产范围</th></tr></thead><tbody>`;
+  list.forEach(r=>{ h+=`<tr><td>${esc(r['供应商名称'])}</td><td>${esc(r['供应商类型'])}</td><td>${esc(r['经营品种'])}</td><td>${esc(r['生产范围覆盖'])}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skToxicCheck(){
+  const list=rows('normal_purchase').filter(r=>r['采购分类']==='毒性中药材');
+  if(!list.length) return `<h3>毒性药材采购校验</h3><div class="hint">常规采购中暂无「毒性中药材」记录。</div>`;
+  let h=`<h3>☣ 毒性中药材供应商资质校验</h3><table><thead><tr><th>品种</th><th>规格</th><th>供应商生产范围</th><th>校验</th></tr></thead><tbody>`;
+  list.forEach(r=>{ const ok=(r['生产范围覆盖']||'').includes('毒性饮片'); h+=`<tr><td>${esc(r['品种名称'])}</td><td>${esc(r['规格等级'])}</td><td>${esc(r['生产范围覆盖'])}</td><td>${ok?'<span class="tag ok">✓ 含毒性饮片</span>':'<span class="tag danger">✗ 缺毒性饮片资质</span>'}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skProtectCheck(){
+  const list=rows('normal_purchase').filter(r=>r['采购分类']==='国家保护植物或动物');
+  if(!list.length) return `<h3>国家保护品种提醒</h3><div class="hint">常规采购中暂无「国家保护植物或动物」记录。</div>`;
+  let h=`<h3>🌿 国家保护品种合法来源检查</h3><table><thead><tr><th>品种</th><th>采购分类</th><th>来源证明</th></tr></thead><tbody>`;
+  list.forEach(r=>{ const ok=!!r['各批次采购记录']; h+=`<tr><td>${esc(r['品种名称'])}</td><td>${esc(r['采购分类'])}</td><td>${ok?'<span class="tag ok">✓ 有记录</span>':'<span class="tag warn">⚠ 待补合法来源</span>'}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skCustQuery(c){
+  if(!c) return `<h3>客户查询</h3><div class="hint">未识别客户。如：查一下旺达客户里松北中心的中标金额。</div>`;
+  const f=findCustomer(c); if(!f) return `<h3>客户查询：${esc(c)}</h3><div class="hint">未找到该客户。请先在「客户管理」建档。</div>`;
+  return `<h3>👤 客户：${esc(f['客户名称'])}</h3>`+kvHtml(f);
+}
+function skCustFilter(g){
+  const list=rows('customer').filter(r=>r['用货等级']===g);
+  if(!list.length) return `<h3>客户筛选：${esc(g)}</h3><div class="hint">暂无「${esc(g)}」客户。请在「客户管理」设置用货等级。</div>`;
+  let h=`<h3>⭐ 用货等级为 ${esc(g)} 的客户（${list.length} 家）</h3><table><thead><tr><th>客户</th><th>中标金额</th><th>账期</th><th>联系人1</th></tr></thead><tbody>`;
+  list.forEach(r=>{ h+=`<tr><td>${esc(r['客户名称'])}</td><td>${fmt(r['中标金额'])}</td><td>${esc(r['账期情况'])}</td><td>${esc(r['联系人1'])}</td></tr>`; });
+  return h+'</tbody></table>';
+}
+function skCustUpdate(c,ph){
+  if(!c) return `<h3>客户更新</h3><div class="hint">未识别客户。</div>`;
+  const list=rows('customer'); const idx=list.findIndex(r=>r['客户名称']===c||r['客户名称'].includes(c));
+  if(idx<0) return `<h3>客户更新：${esc(c)}</h3><div class="hint">未找到该客户。</div>`;
+  if(ph){ list[idx]['联系人1联系方式']=ph; setRows('customer',list); return `<h3>✅ 已更新客户联系方式</h3><div class="kv"><b>客户</b><span>${esc(list[idx]['客户名称'])}</span><b>新联系方式</b><span>${esc(ph)}</span></div>`; }
+  return `<h3>客户更新：${esc(c)}</h3><div class="hint">未解析到联系方式（手机号/电话）。请在指令中包含号码，如：更新松北中心的联系方式为13800000000。</div>`;
+}
+function skToday(){
+  migratePlanData();
+  const todayStr=ymd(new Date());
+  const plans=rows('plan').filter(r=>r['日期']===todayStr && !r['完成']);
+  let h=`<h3>🗓 今日待办清单（${todayStr}）</h3>`;
+  if(plans.length){ h+='<ul>'+plans.map(r=>`<li>${esc(r['标题']||'无标题')} <span class="pill">${esc(r['标签']||'一般')}</span></li>`).join('')+'</ul>'; }
+  else h+=`<div class="hint">今日暂无待办任务。建议在「计划管理」录入今日待办。</div>`;
+  h+=`<div class="sec-title">固定动作</div><ul><li>查新招标公告（中国招标投标公共服务平台 / 哈尔滨市药品集中采购平台）</li><li>跟进入围/中标结果</li><li>更新客户回款</li></ul>`;
+  return h;
+}
+function skWeekPlan(){
+  migratePlanData();
+  const now=new Date();
+  const weekStart=new Date(now); weekStart.setDate(now.getDate()-now.getDay()+1); // 周一
+  const weekEnd=new Date(weekStart); weekEnd.setDate(weekStart.getDate()+6);
+  const plans=rows('plan').filter(r=>{
+    if(!r['日期']||r['完成']) return false;
+    const d=new Date(r['日期']+'T00:00:00');
+    return d>=weekStart && d<=weekEnd;
+  });
+  let h=`<h3>🗓 本周工作清单</h3>`;
+  if(plans.length){ h+='<ul>'+plans.map(r=>`<li>${esc(r['标题']||'无标题')} <span class="pill">${esc(r['标签']||'一般')}</span> <small style="color:var(--mut)">${r['日期']}</small></li>`).join('')+'</ul>'; }
+  else h+=`<div class="hint">本周暂无待办任务。建议在「计划管理」录入本周计划。</div>`;
+  h+=`<div class="sec-title">常规内容</div><ul><li>本周重点目标</li><li>筛选新项目</li><li>整理投标文件</li><li>客户电话回访计划</li></ul>`;
+  return h;
+}
+function skTrend(v){
+  if(!v) return `<h3>价格趋势分析</h3><div class="hint">未识别品种。如：分析白芍近一年的价格走势。</div>`;
+  const f=findInList(rows('price'),'品种名称',v); if(!f) return `<h3>价格趋势：${esc(v)}</h3><div class="hint">价格监测中暂无「${esc(v)}」数据。数据源：药通网 www.yt1998.com（需联网或手动录入近一年价格）。</div>`;
+  let h=`<h3>📉 价格趋势分析：${esc(v)}</h3><div class="kv"><b>当前价格</b><span>${fmt(f['当前市场价格'])} 元/kg</span><b>趋势判断</b><span>${esc(f['价格趋势判断'])}</span></div>`;
+  if(f['近期价格走势']) h+=`<div class="sec-title">近期价格走势</div><pre class="mono">${esc(f['近期价格走势'])}</pre>`;
+  if(f['历史价格对比']) h+=`<div class="sec-title">历史价格对比</div><pre class="mono">${esc(f['历史价格对比'])}</pre>`;
+  return h;
+}
+function skMarket(v){
+  if(v){ const f=findInList(rows('price'),'品种名称',v); if(f) return `<h3>🌐 市场行情：${esc(v)}</h3><div class="kv"><b>当前价格</b><span>${fmt(f['当前市场价格'])} 元/kg</span><b>趋势</b><span>${esc(f['价格趋势判断'])}</span></div>${f['市场行情简报']?`<pre class="mono">${esc(f['市场行情简报'])}</pre>`:''}`; return `<h3>市场行情：${esc(v)}</h3><div class="hint">价格监测中暂无「${esc(v)}」。数据源：药通网 www.yt1998.com（1288 个常用药材每日报价、10 年历史）。</div>`; }
+  return `<h3>🌐 当前药市整体行情</h3><div class="hint">整体行情需在「价格监测」按品种录入（数据源：药通网）。可先查询具体品种，如：查一下白术现在什么价格。</div>`;
+}
+function skPriceWatch(){
+  const list=rows('price').map(r=>computeRow('price',r)).filter(r=>r['当前市场价格']!==undefined && r['当前市场价格']!=='');
+  if(!list.length) return `<h3>价格变动检测</h3><div class="hint">尚未录入价格。数据源：药通网 www.yt1998.com（每日报价、10 年历史）。在「价格变动检测」页录入并填写「上次监测价格」作为基线。</div>`;
+  const up=list.filter(r=>(r['变动百分比']||0)>0), down=list.filter(r=>(r['变动百分比']||0)<0), al=list.filter(r=>Math.abs(r['变动百分比']||0)>=5);
+  let h=`<h3>📊 价格变动检测</h3><div class="kv"><b>监测品种</b><span>${list.length}</span><b>上涨</b><span>${up.length}</span><b>下跌</b><span>${down.length}</span><b>预警(≥5%)</b><span>${al.length}</span></div>`;
+  h+=`<div class="sec-title">波动明细</div><ul>`;
+  list.forEach(r=>{
+    const pct=r['变动百分比']||0, hasPrev=(r['上次监测价格']!==undefined && r['上次监测价格']!=='');
+    let d='持平';
+    if(hasPrev && pct!==0) d=(pct>0?'▲ +':'▼ ')+pct+'%'; else if(!hasPrev) d='未设基线';
+    h+=`<li>${esc(r['品种名称']||'未命名')}：当前 ${fmt(r['当前市场价格'])} 元/kg（基线 ${fmt(hasPrev?r['上次监测价格']:'—')}）`+(pct>0?` <span style="color:var(--danger);font-weight:600">${d}</span>`:pct<0?` <span style="color:var(--ok);font-weight:600">${d}</span>`:` ${d}`)+`</li>`;
+  });
+  h+='</ul><div class="hint">数据源参考：药通网 '+esc(YAO_WEB)+'（小程序：'+esc(YAO_MINI)+'）。</div>';
+  return h;
+}
+function skTender(){
+  const sites=rows('website');
+  let h=`<h3>📋 招标公告抓取（哈尔滨市 · 中药饮片）</h3><div class="hint">离线模板：实际抓取需配置平台账号并联网。已配置的网址如下，可据此手动粘贴本周公告：</div>`;
+  if(sites.length){ h+='<ul>'+sites.map(r=>`<li>${esc(r['网址名称']||r['网址'])} — <a class="lk" href="${esc(r['网址'])}" target="_blank">${esc(r['网址'])}</a> <span class="pill">${esc(r['使用频率']||'')}</span></li>`).join('')+'</ul>'; }
+  else h+='<div class="hint">尚未在「工作网址导航」配置平台。建议录入：中国招标投标公共服务平台、哈尔滨市药品集中采购平台、中国政府采购网。</div>';
+  h+=`<div class="sec-title">抓取关键词</div><span class="pill">中药饮片</span> <span class="pill">非集采</span> <span class="pill">白芍</span> <span class="pill">哈尔滨</span>`;
+  return h;
+}
+
+/* ===================== 工具 ===================== */
+function hintEmpty(table,msg){ return `<h3>查询</h3><div class="hint">${msg}</div><div class="sec-title">如何产生数据</div><div>前往「${TABLES[table]?TABLES[table].title:table}」模块，点击「+ 添加行」录入业务记录，Skill 将基于真实数据实时计算。</div>`; }
+function download(name,text){ const b=new Blob([text],{type:'text/plain;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+function exportJSON(){ download('中药饮片工作台数据_'+ymd(TODAY)+'.json', JSON.stringify(DB,null,2)); }
+function importJSON(el){ const f=el.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(d&&d.tables){ DB=d; save(); alert('导入成功！'); go('dashboard'); } else alert('文件格式不正确'); }catch(e){ alert('解析失败：'+e.message); } }; rd.readAsText(f); }
+function clearAll(){ if(confirm('确定清空全部数据？此操作不可恢复（导出备份可先点「导出全部数据」）。')){ DB={tables:{}}; save(); alert('已清空'); go('dashboard'); } }
+
+/* 客户回款双向同步（新增销售后刷新客户待回款/已回款） */
+function syncCustomerFromSales(){
+  const sales=rows('sales').map(r=>computeRow('sales',r)&&r); // keep raw
+  const list=rows('customer');
+  // 客户管理已移除「已回款金额/待回款金额」字段，故不再回写回款；
+  // 保留函数以兼容保存逻辑，后续如需「中标金额」汇总可在此扩展。
+  setRows('customer',list);
+}
+
+/* ===================== 云同步 ===================== */
+const SYNC_KEY='tcm_sync_cfg';
+let _syncing=false, _pushTimer=null, _currentView='dashboard';
+let SYNC = loadSync();
+function loadSync(){ try{ const s=JSON.parse(localStorage.getItem(SYNC_KEY)); if(s&&typeof s==='object') return Object.assign({enabled:false,url:'',key:'',mode:'auto',rev:0,status:'off',last:0,lastView:'dashboard'}, s); }catch(e){} return {enabled:false,url:'',key:'b2a2595d984bb6656f820fc2d0182e8a',mode:'auto',rev:0,status:'off',last:0,lastView:'dashboard'}; }
+function saveSync(){ localStorage.setItem(SYNC_KEY, JSON.stringify(SYNC)); }
+function apiUrl(p){ const b=(SYNC.url||'').trim().replace(/\/+$/,''); return (b||'')+'/api'+p; }
+function timeAgo(t){ if(!t) return ''; const s=Math.floor((Date.now()-t)/1000); if(s<60) return '刚刚'; if(s<3600) return Math.floor(s/60)+' 分钟前'; if(s<86400) return Math.floor(s/3600)+' 小时前'; return Math.floor(s/86400)+' 天前'; }
+
+async function cloudGet(){
+  const r=await fetch(apiUrl('/db'),{headers:{'x-access-key':SYNC.key||''}});
+  if(r.status===401) throw new Error('密钥不正确');
+  if(!r.ok) throw new Error('拉取失败('+r.status+')');
+  return await r.json();
+}
+async function cloudPut(data,baseRev){
+  const r=await fetch(apiUrl('/db'),{method:'PUT',headers:{'x-access-key':SYNC.key||'','Content-Type':'application/json'},body:JSON.stringify({data,rev:baseRev})});
+  if(r.status===401) throw new Error('密钥不正确');
+  if(r.status===409){ const body=await r.json().catch(()=>({})); const e=new Error('conflict'); e.remote=body; throw e; }
+  if(!r.ok) throw new Error('推送失败('+r.status+')');
+  return await r.json();
+}
+function onLocalChange(){
+  if(_syncing||!SYNC.enabled||SYNC.mode!=='auto') return;
+  if(_pushTimer) clearTimeout(_pushTimer);
+  _pushTimer=setTimeout(()=>{ cloudPush().catch(err=>setSyncStatus('error',err.message)); }, 800);
+}
+function rerenderCurrent(){
+  const v=_currentView||'dashboard';
+  if(v==='dashboard') renderDashboard();
+  else if(TABLES[v]) renderTable(v);
+  else renderSpecial(v);
+}
+async function cloudPull(){
+  const j=await cloudGet();
+  _syncing=true;
+  try{
+    if(j.rev>SYNC.rev){ DB=j.data; if(!DB||!DB.tables) DB={tables:{}}; SYNC.rev=j.rev; SYNC.last=Date.now(); saveSync(); save(); }
+    else { SYNC.rev=j.rev; saveSync(); }
+  } finally { _syncing=false; }
+  rerenderCurrent(); setSyncStatus('ok'); return j;
+}
+async function cloudPush(){
+  _syncing=true;
+  try{ const res=await cloudPut(DB, SYNC.rev); SYNC.rev=res.rev; SYNC.last=Date.now(); SYNC.status='ok'; saveSync(); setSyncStatus('ok'); }
+  finally { _syncing=false; }
+}
+async function syncNow(){
+  setSyncStatus('syncing');
+  try{ await cloudPull(); await cloudPush(); setSyncStatus('ok'); }
+  catch(err){
+    if(err.remote){
+      _syncing=true;
+      try{ DB=err.remote.data; if(!DB||!DB.tables) DB={tables:{}}; SYNC.rev=err.remote.rev; saveSync(); save(); rerenderCurrent(); }
+      finally { _syncing=false; }
+      try{ await cloudPush(); setSyncStatus('ok'); }
+      catch(e2){ setSyncStatus('error', e2.message); }
+    } else setSyncStatus('error', err.message);
+  }
+}
+function setSyncStatus(st,msg){
+  SYNC.status=st; if(st==='ok') SYNC.last=SYNC.last||Date.now(); saveSync();
+  const box=document.getElementById('syncBox'), dot=document.getElementById('syncDot'), txt=document.getElementById('syncTxt');
+  if(!box) return;
+  const map={off:['#9bb1a3','未开启'],ok:['#1f9d57','已同步 · '+timeAgo(SYNC.last)],syncing:['#d99500','同步中…'],error:['#d8453b','同步异常']};
+  const m=map[st]||map.off;
+  box.classList.toggle('err', st==='error'); box.classList.toggle('syncing', st==='syncing');
+  if(dot) dot.style.background=m[0];
+  txt.textContent=msg||m[1];
+}
+function syncToggle(on){ SYNC.enabled=on; saveSync(); if(on){ syncSave(); syncNow(); } else setSyncStatus('off'); }
+function syncSave(){
+  SYNC.url=(document.getElementById('syncUrl').value||'').trim();
+  SYNC.key=document.getElementById('syncKey').value||'';
+  SYNC.mode=document.getElementById('syncMode').value;
+  SYNC.enabled=document.getElementById('syncOn').checked;
+  saveSync();
+  const m=document.getElementById('syncTestMsg'); if(m){ m.textContent='已保存'; m.style.background='var(--green-l)'; }
+  if(SYNC.enabled) syncNow();
+}
+async function syncTest(){
+  const m=document.getElementById('syncTestMsg');
+  const url=(document.getElementById('syncUrl').value||'').trim().replace(/\/+$/,'');
+  const key=document.getElementById('syncKey').value||'';
+  try{
+    const r=await fetch((url||'')+'/api/health',{headers:{'x-access-key':key}});
+    if(r.ok){ const j=await r.json(); if(m){ m.textContent='连接正常 · rev '+j.rev; m.style.background='var(--green-l)'; } }
+    else if(r.status===401){ if(m){ m.textContent='可达，但密钥不正确'; m.style.background='#fbf0d8'; } }
+    else if(m){ m.textContent='HTTP '+r.status; m.style.background='#fbf0d8'; }
+  }catch(e){ if(m){ m.textContent='无法连接：'+e.message; m.style.background='#fdeaea'; } }
+}
+
+/* ===================== 登录门禁 ===================== */
+const AUTH_KEY='tcm_auth_v1';
+let AUTH={account:'',passHash:'',avatar:'',remember:false};
+let _loggedIn=false;
+function loadAuth(){ try{ const a=JSON.parse(localStorage.getItem(AUTH_KEY)); if(a&&typeof a==='object'){ AUTH.account=a.account||''; AUTH.passHash=a.passHash||''; AUTH.avatar=a.avatar||''; AUTH.remember=!!a.remember; } }catch(e){} }
+function saveAuth(){ localStorage.setItem(AUTH_KEY, JSON.stringify({account:AUTH.account,passHash:AUTH.passHash,avatar:AUTH.avatar,remember:AUTH.remember})); }
+function hashPass(s){ let h=0; s=String(s||''); for(let i=0;i<s.length;i++){ h=(h*31+ s.charCodeAt(i))>>>0; } return 'k'+h.toString(16); }
+function renderAvatar(){ const el=document.getElementById('hdrAva'); if(!el) return; if(AUTH.avatar){ el.innerHTML='<img src="'+AUTH.avatar+'" alt="头像">'; } else { el.textContent=(AUTH.account||'我').slice(0,1); } }
+function authLoginHtml(){
+  return '<div class="field"><label>账号</label><input id="lgAcc" value="'+esc(AUTH.account)+'" placeholder="请输入账号"></div>'
+    +'<div class="field"><label>密码</label><input id="lgPwd" type="password" placeholder="请输入密码"></div>'
+    +'<label class="auth-remember"><input type="checkbox" id="lgRem"'+(AUTH.remember?' checked':'')+'> 记住密码（下次自动进入）</label>'
+    +'<div class="auth-err" id="authErr"></div>'
+    +'<button class="btn" style="width:100%" onclick="doLogin()">进入工作台</button>'
+    +'<span class="auth-link" onclick="resetAccount()">忘记密码？清除账户并重设</span>';
+}
+function authSetupHtml(){
+  return '<div class="field"><label>设置账号</label><input id="stAcc" placeholder="设置登录账号"></div>'
+    +'<div class="field"><label>设置密码</label><input id="stPwd" type="password" placeholder="至少 4 位"></div>'
+    +'<div class="field"><label>确认密码</label><input id="stPwd2" type="password" placeholder="再次输入密码"></div>'
+    +'<div class="field"><label>头像（可选）</label><input type="file" id="stAva" accept="image/*" onchange="previewAuthAvatar(this)"><div id="avaPrev"></div></div>'
+    +'<div class="auth-err" id="authErr"></div>'
+    +'<button class="btn" style="width:100%" onclick="doSetup()">创建并进入</button>';
+}
+function boot(){
+  const gate=document.getElementById('authGate');
+  const body=document.getElementById('authBody');
+  if(AUTH.account){
+    document.getElementById('authTitle').textContent='快快的工作台';
+    // 勾选了“记住密码”则跳过输入，直接进入
+    if(AUTH.remember){ enterApp(); return; }
+    document.getElementById('authSub').textContent='请输入账号和密码进入';
+    body.innerHTML=authLoginHtml();
+  } else {
+    document.getElementById('authTitle').textContent='欢迎使用 · 快快的工作台';
+    document.getElementById('authSub').textContent='首次使用，请设置登录账号和密码';
+    body.innerHTML=authSetupHtml();
+  }
+  gate.style.display='flex';
+}
+function enterApp(){
+  _loggedIn=true;
+  const gate=document.getElementById('authGate'); if(gate) gate.style.display='none';
+  renderAvatar(); initApp();
+}
+function doLogin(){
+  const acc=(document.getElementById('lgAcc').value||'').trim();
+  const pwd=document.getElementById('lgPwd').value||'';
+  const err=document.getElementById('authErr');
+  if(acc!==AUTH.account || hashPass(pwd)!==AUTH.passHash){ err.textContent='账号或密码错误'; return; }
+  err.textContent='';
+  AUTH.remember=!!(document.getElementById('lgRem')&&document.getElementById('lgRem').checked);
+  saveAuth();
+  enterApp();
+}
+function doSetup(){
+  const acc=(document.getElementById('stAcc').value||'').trim();
+  const pwd=document.getElementById('stPwd').value||'';
+  const pwd2=document.getElementById('stPwd2').value||'';
+  const err=document.getElementById('authErr');
+  if(!acc){ err.textContent='请设置账号'; return; }
+  if(pwd.length<4){ err.textContent='密码至少 4 位'; return; }
+  if(pwd!==pwd2){ err.textContent='两次输入的密码不一致'; return; }
+  AUTH.account=acc; AUTH.passHash=hashPass(pwd); saveAuth();
+  _loggedIn=true; err.textContent='';
+  document.getElementById('authGate').style.display='none';
+  renderAvatar(); initApp();
+}
+function previewAuthAvatar(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ AUTH.avatar=r.result; const p=document.getElementById('avaPrev'); if(p) p.innerHTML='<img src="'+r.result+'" style="width:64px;height:64px;border-radius:50%;margin-top:8px">'; };
+  r.readAsDataURL(f);
+}
+function resetAccount(){
+  localStorage.removeItem(AUTH_KEY); AUTH={account:'',passHash:'',avatar:'',remember:false};
+  document.getElementById('authTitle').textContent='欢迎使用 · 快快的工作台';
+  document.getElementById('authSub').textContent='已清除，请重新设置登录账号和密码';
+  document.getElementById('authBody').innerHTML=authSetupHtml();
+}
+function openSettings(){
+  const box=document.getElementById('setBox');
+  box.innerHTML='<h3>⚙ 账户设置</h3>'
+    +'<div class="field"><label>账号</label><input id="setAcc" value="'+esc(AUTH.account)+'"></div>'
+    +'<div class="field"><label>新密码（留空则不修改）</label><input id="setPwd" type="password" placeholder="不修改请留空"></div>'
+    +'<div class="field"><label>确认新密码</label><input id="setPwd2" type="password" placeholder="再次输入新密码"></div>'
+    +'<div class="field"><label>头像</label><input type="file" id="setAva" accept="image/*" onchange="previewSetAvatar(this)"><div id="setAvaPrev">'+(AUTH.avatar?'<img src="'+AUTH.avatar+'" style="width:64px;height:64px;border-radius:50%;margin-top:8px">':'')+'</div></div>'
+    +'<div class="auth-err" id="setErr"></div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+    +'<button class="btn" onclick="saveSettings()">保存设置</button>'
+    +'<button class="btn danger" onclick="logout()">退出登录</button>'
+    +'<button class="btn ghost" onclick="closeSet()">取消</button></div>';
+  document.getElementById('setModal').classList.add('show');
+}
+function previewSetAvatar(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ AUTH.avatar=r.result; const p=document.getElementById('setAvaPrev'); if(p) p.innerHTML='<img src="'+r.result+'" style="width:64px;height:64px;border-radius:50%;margin-top:8px">'; };
+  r.readAsDataURL(f);
+}
+function saveSettings(){
+  const acc=(document.getElementById('setAcc').value||'').trim();
+  const pwd=document.getElementById('setPwd').value||'';
+  const pwd2=document.getElementById('setPwd2').value||'';
+  const err=document.getElementById('setErr');
+  if(!acc){ err.textContent='账号不能为空'; return; }
+  if(pwd && pwd!==pwd2){ err.textContent='两次输入的密码不一致'; return; }
+  AUTH.account=acc; if(pwd) AUTH.passHash=hashPass(pwd); saveAuth();
+  renderAvatar(); closeSet();
+}
+function logout(){ _loggedIn=false; AUTH.remember=false; saveAuth(); closeSet(); boot(); }
+function closeSet(){ document.getElementById('setModal').classList.remove('show'); }
+
+/* ===================== 初始化 ===================== */
+let _inited=false;
+function initApp(){
+  if(_inited) return; _inited=true;
+  migrateData();
+  // 每日价格变动自动检测（按日期门控：当天未检测则检测一次并推送横幅）
+  try{
+    const last=localStorage.getItem('tcm_pw_last')||'';
+    if(last.indexOf(ymd(new Date()))<0){
+      const res=runPriceWatchCheck(false);
+      if(res.total) setTimeout(()=>{
+        if(res.alerts.length) toastPW('⚠ 价格波动预警：'+res.alerts.length+' 个品种涨跌超 '+PW_ALERT+'%（'+res.up.length+' 涨 / '+res.down.length+' 跌）');
+        else toastPW('📊 今日价格波动检测：'+res.up.length+' 涨 / '+res.down.length+' 跌，无超 '+PW_ALERT+'% 预警');
+      },1200);
+    }
+  }catch(e){}
+  renderNav();
+  updatePwFab();
+  if(SYNC.enabled){ cloudPull().catch(e=>{ console.warn('云端拉取失败：',e.message); setSyncStatus('error', e.message); }).finally(()=>go(SYNC.lastView||'dashboard')); }
+  else { setSyncStatus('off'); go('dashboard'); }
+  document.getElementById('cmdInput').addEventListener('keydown',e=>{ if(e.key==='Enter') runCmd(); });
+}
+loadAuth();
+boot();
+</script>
+</body>
+</html>
+
+<script>
+if('serviceWorker' in navigator){
+  var _swr=false;
+  function _swUp(){ navigator.serviceWorker.register('sw.js').then(function(reg){ if(reg&&reg.update){ reg.update(); } }).catch(function(){}); }
+  window.addEventListener('load', _swUp);
+  navigator.serviceWorker.addEventListener('controllerchange', function(){ if(!_swr){ _swr=true; location.reload(); } });
+}
+</script>
+</body>
+</html>
